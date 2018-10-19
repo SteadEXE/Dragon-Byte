@@ -56,14 +56,6 @@
                 socket: Socket.getInstance()
             }
         },
-        mounted () {
-            this.socket.on('authentification', this.onAuthentification)
-            this.socket.on('authorization', this.onAuthorization)
-        },
-        destroyed () {
-            this.socket.removeEventListener('authentification', this.onAuthentification)
-            this.socket.removeEventListener('authorization', this.onAuthorization)
-        },
         methods: {
             submit (event) {
                 event.preventDefault()
@@ -72,19 +64,6 @@
                 this.message = ''
 
                 this.socket.emit('authentificate', this.username, this.password, this.email)
-            },
-            onAuthentification (payload) {
-                if (payload.status == 'ERR') {
-                    this.message = payload.message
-                    this.busy = false
-
-                    return
-                }
-
-                this.socket.emit('authorize', payload.data.token)
-            },
-            onAuthorization () {
-                this.$store.dispatch('account/authentificate')
             }
         }
     }

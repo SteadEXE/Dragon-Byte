@@ -1,16 +1,39 @@
 import IO from 'socket.io-client'
-import SocketStore from '@/store'
+import Store from '@/store'
 
 class Socket {
     constructor () {
         this.instance = IO('ws://localhost:8000')
 
         this.instance.on('connect', () => {
-            SocketStore.dispatch('socket/connect')
+            Store.dispatch('socket/connect')
+
+            const token = window.localStorage.getItem('auth-token')
+
+            if (token !== null) {
+                this.instance.emit('authorize', token)
+            }
         })
 
         this.instance.on('disconnect', () => {
-            SocketStore.dispatch('socket/disconnect')
+            Store.dispatch('socket/disconnect')
+        })
+
+        this.instance.on('authentification', (payload) => {
+            if (payload.status == 'ERR') {
+                this.message = payload.message
+                this.busy = false
+
+                return
+            }
+
+            window.localStorage.setItem('auth-token', payload.data.token)
+
+            this.instance.emit('authorize', payload.data.token)
+        })
+
+        this.instance.on('authorization', () => {
+            Store.dispatch('account/authentificate')
         })
     }
 
