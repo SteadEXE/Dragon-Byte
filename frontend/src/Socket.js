@@ -3,7 +3,7 @@ import Store from '@/store'
 
 class Socket {
     constructor () {
-        this.instance = IO('ws://localhost:8000')
+        this.instance = IO(`ws://${window.location.hostname}:8000`)
 
         this.instance.on('connect', () => {
             Store.dispatch('socket/connect')
