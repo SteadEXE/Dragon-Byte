@@ -5,7 +5,6 @@ class UserHandler {
     handle (socket) {
         // Authentification
         socket.on('authentificate', async (username, password, email) => {
-            console.log(password)
             const hash = crypto.createHash('sha256')
             hash.update(password)
             password = hash.digest('hex')
@@ -33,7 +32,7 @@ class UserHandler {
 
                 const token = crypto.randomBytes(64).toString('hex')
 
-                user = User.create({
+                user = new User({
                     username: username,
                     password: password,
                     email:  email,

@@ -1,6 +1,7 @@
 const request = require('request')
 const url = require('url')
 const querystring = require('querystring')
+const cheerio = require('cheerio')
 const Track = require('../../Models/Track')
 const User = require('../../Models/User')
 const Pending = require('../../Models/Pending')
@@ -34,14 +35,14 @@ class QueueHandler {
                     let queryData = querystring.parse(uri.query)
 
                     // Verify if track already exists in database
-                    let track = Track.findOne({
+                    let track = await Track.findOne({
                         videoId: queryData.v
                     })
 
                     if (track === null) {
                         let $ = cheerio.load(body)
 
-                        track = Track.create({
+                        track = new Track({
                             videoId: queryData.v,
                             title: $('title').text().toString().replace(" - YouTube", "")
                         })
@@ -51,7 +52,7 @@ class QueueHandler {
 
                     const user = await User.findOne({ token: socket.token })
 
-                    const pending = Pending.create({
+                    let pending = new Pending({
                         user: user,
                         track: track
                     })

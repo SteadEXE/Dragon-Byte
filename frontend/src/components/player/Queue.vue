@@ -44,6 +44,8 @@
                 event.preventDefault()
 
                 this.socket.emit('queue.push', this.url)
+
+                this.url = url
             }
         }
     }
