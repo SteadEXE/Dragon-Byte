@@ -33,7 +33,7 @@ class UserHandler {
 
                 const token = crypto.randomBytes(64).toString('hex')
 
-                user = new User({
+                user = User.create({
                     username: username,
                     password: password,
                     email:  email,

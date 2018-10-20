@@ -42,6 +42,7 @@
   body {
     background: rgb(50, 50, 50);
     font-family: 'Helvetica', 'Arial', sans-serif;
+    padding: 20px;
   }
 </style>
 

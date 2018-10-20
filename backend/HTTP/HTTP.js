@@ -3,6 +3,7 @@ const express = require('express')
 const SocketIO = require('socket.io')
 const Console = require('../Console')
 const UserHandler = require('./Handler/UserHandler')
+const QueueHandler = require('./Handler/QueueHandler')
 
 class HTTP {
     init () {
@@ -16,6 +17,7 @@ class HTTP {
             Console.info('Connection accepted.')
             
             UserHandler.handle(socket)
+            QueueHandler.handle(socket)
         })
 
         server.listen(8000)

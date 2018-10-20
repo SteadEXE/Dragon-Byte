@@ -1,15 +1,22 @@
 <template>
     <div>
+        <div class="row">
+            <div class="col-4">
+                <queue></queue>
+            </div>
+        </div>
         <player></player>
     </div>
 </template>
 
 <script>
     import Player from '@/components/player/Player'
+    import Queue from '@/components/player/Queue'
 
     export default {
         components: {
-            player: Player
+            player: Player,
+            queue: Queue
         }
     }
 </script>
