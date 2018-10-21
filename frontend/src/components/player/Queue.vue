@@ -50,7 +50,7 @@
 
                 Socket.getInstance().emit('queue/push', this.url)
 
-                this.url = url
+                this.url = ''
             }
         }
     }

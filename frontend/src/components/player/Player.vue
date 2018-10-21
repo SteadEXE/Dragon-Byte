@@ -1,21 +1,29 @@
 <template>
     <div>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-bottom">
-            <div class="collapse navbar-collapse" v-if="state != 'idle'">
-                <span class="navbar-text text-white mr-3 badge badge-primary">
-                    <i class="fal fa-spinner fa-spin mr-1" v-if="state == 'loading'"></i> {{ track.elapsed }} / {{ track.duration }}
-                </span>
-                <span class="navbar-text text-white mr-3">
-                    {{ track.title }}
-                </span>
-                <button class="btn btn-outline-primary mr-3">
-                    <i class="fas fa-step-forward"></i>
-                </button>
-                <span class="navbar-text text-white mr-3">
-                    {{ owner.nickname }} <i class="fas fa-trophy-alt mx-1"></i> {{ owner.experience }}
-                </span>
+        <div class="card bg-dark text-light shadow-lg">
+            <div class="card-header text-center text-uppercase">
+                <span v-if="state === 'idle'">EN ATTENTE</span>
+                <span v-if="state === 'loading'">CHARGEMENT DE LA VIDÉO</span>
+                <span v-if="state === 'playing'">LECTURE EN COURS</span>
             </div>
-        </nav>
+            <div class="card-body text-center">
+                <div v-if="state === 'loading'">
+                    <i class="fas fa-cog fa-spin" id="loader"></i>
+                </div>
+                <div v-else-if="state === 'playing'">
+                    <p class="lead">
+                        {{ track.title }}
+                    </p>
+                    <div class="text-primary">
+                        <i class="fas fa-clock mr-2"></i> {{ track.elapsed }} / {{ track.duration }}
+                        <i class="fas fa-user-circle mx-2"></i> {{ owner.nickname }}
+                    </div>
+                </div>
+                <div v-else>
+                    Il n'y a aucun titre dans la file d'attente.
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -39,4 +47,10 @@
         Store.dispatch('update', payload)
     })
 </script>
+
+<style>
+    #loader {
+        font-size: 64px;
+    }
+</style>
 

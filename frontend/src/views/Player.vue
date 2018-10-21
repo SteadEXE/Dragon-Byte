@@ -5,10 +5,12 @@
                 <queue></queue>
             </div>
             <div class="col-4">
+                <player></player>
+            </div>
+            <div class="col-4">
                 <history></history>
             </div>
         </div>
-        <player></player>
     </div>
 </template>
 

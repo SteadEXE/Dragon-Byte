@@ -1,5 +1,4 @@
 const request = require('request')
-const url = require('url')
 const querystring = require('querystring')
 const cheerio = require('cheerio')
 const Track = require('../../Models/Track')
@@ -7,6 +6,8 @@ const User = require('../../Models/User')
 const Pending = require('../../Models/Pending')
 const Console = require('../../Console')
 const Sockets = require('../Sockets')
+const Player = require('../../Player/Player')
+const States = require('../../Player/Constants/States')
 
 class QueueHandler {
     handle (socket) {
@@ -61,6 +62,12 @@ class QueueHandler {
                     })
 
                     await pending.save()
+
+                    if (Player.state === States.IDLE) {
+                        Player.play()
+                    } else {
+                        this.broadcastQueue()
+                    }
                 })
             })
 
@@ -70,7 +77,7 @@ class QueueHandler {
         })
     }
 
-    async broadcastQueue (socket = Socket.io) {
+    async broadcastQueue (socket = Sockets.io) {
         let pendings = await Pending.find({})
             .populate('track')
             .populate('owner')

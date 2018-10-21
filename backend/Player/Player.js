@@ -79,6 +79,11 @@ class Player extends EventEmitter {
                                 .sort({ _id: '-1' })
 
         if (pending === null) {
+            this.current = null
+            this.elapsed = 0
+            this.duration = 0
+
+            this.emit('update', PlayerUpdate.FULL)
             return
         }
 
