@@ -10,6 +10,12 @@ const Player = require('../../Player/Player')
 const States = require('../../Player/Constants/States')
 
 class QueueHandler {
+    constructor () {
+        Player.on('play', () => {
+            this.broadcastQueue()
+        })
+    }
+
     handle (socket) {
         this.broadcastQueue(socket)
 

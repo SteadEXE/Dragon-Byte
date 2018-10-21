@@ -41,6 +41,7 @@ class Player extends EventEmitter {
 
         ipcMain.on('play', () => {
             this.state = States.PLAYING
+
             this.emit('update', PlayerUpdate.FULL)
 
             Console.positive(`Now playing ${this.current.track.title}.`, 'PLAYER')
@@ -104,6 +105,8 @@ class Player extends EventEmitter {
         let url = `https://www.youtube.com/watch?v=${pending.track.videoId}`
 
         this.window.webContents.send('play', url)
+
+        this.emit('play')
     }
 }
 
