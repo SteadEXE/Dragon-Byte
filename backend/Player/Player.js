@@ -16,6 +16,8 @@ class Player extends EventEmitter {
 
         this.updated = 0
 
+        this.current = null
+
         this.emit('update')
     }
 
@@ -28,20 +30,28 @@ class Player extends EventEmitter {
 
             PlayerFirewall.filter(this.window)
 
-            this.window.once('ready-to-show', () => this.play)
+            this.window.webContents.on('dom-ready', () => {
+                this.play()
+            })
 
             this.window.loadURL(`file:///${__dirname}/Player.html`)
+
         }
 
         ipcMain.on('play', () => {
             this.emit('update')
         })
 
-        ipcMain.on('end', (evebnt, blocked) => {
+        ipcMain.on('end', (event, blocked) => {
             this.state = PlayerState.IDLE
 
             this.emit('update')
             this.play()
+        })
+
+        ipcMain.on('load', () => {
+            this.state = PlayerState.LOADING
+            this.emit('update')
         })
     }
 
@@ -50,17 +60,18 @@ class Player extends EventEmitter {
     }
 
     async play () {
-        this.state = PlayerState.LOADING
-        this.emit('update')
-
         let pending = await Pending.findOne({})
                                 .populate('track')
                                 .sort({ _id: '-1' })
 
-        // Generate video from 
-        let url = `https://www.youtube.com/watch?v=${pending.track.videoId}`
+        if (pending !== null) {
+            this.current = pending
 
-        this.window.webContents.send('play', url)
+            // Generate video from 
+            let url = `https://www.youtube.com/watch?v=${pending.track.videoId}`
+
+            this.window.webContents.send('play', url)
+        }
     }
 }
 

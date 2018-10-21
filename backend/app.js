@@ -4,6 +4,9 @@ const Console = require('./Console')
 const Player = require('./Player/Player')
 const HTTP = require('./HTTP/HTTP')
 
+// Allow autoplay of videos.
+app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required')
+
 app.on('ready', async () => {
     Console.info('Bootstrap completed.')
 
@@ -11,6 +14,4 @@ app.on('ready', async () => {
 
     Player.init()
     HTTP.init()
-
-    Player.play()
 })
