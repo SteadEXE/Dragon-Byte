@@ -9,17 +9,19 @@
 
 <script>
     import { mapState } from 'vuex'
+    import Entry from './Entry'
     import Store from '@/stores/History'
     import Socket  from '@/Socket'
 
     export default {
+        components: { entry: Entry },
         store: Store,
         computed: mapState({
             tracks: state => state.tracks
         })
     }
 
-    Socket.getInstance().on('history/tracks', (tracks) => {
+    Socket.getInstance().on('history/tracks', tracks => {
         Store.dispatch('SET_TRACKS', tracks)
     })
 </script>

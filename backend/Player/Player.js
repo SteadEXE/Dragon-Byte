@@ -62,7 +62,7 @@ class Player extends EventEmitter {
 
         ipcMain.on('load', () => {
             this.state = States.LOADING
-            this.emit('update', PlayerUpdate.STATE)
+            this.emit('update', PlayerUpdate.FULL)
 
             Console.positive(`Now loading ${this.current.track.title}.`, 'PLAYER')
         })
@@ -78,6 +78,10 @@ class Player extends EventEmitter {
                                 .populate('owner')
                                 .sort({ _id: '-1' })
 
+        if (pending === null) {
+            return
+        }
+
         // Increase played time
         pending.track.played++
 
@@ -89,14 +93,12 @@ class Player extends EventEmitter {
         await pending.save()
         await history.save()
 
-        if (pending !== null) {
-            this.current = pending
+        this.current = pending
 
-            // Generate video from 
-            let url = `https://www.youtube.com/watch?v=${pending.track.videoId}`
+        // Generate video from 
+        let url = `https://www.youtube.com/watch?v=${pending.track.videoId}`
 
-            this.window.webContents.send('play', url)
-        }
+        this.window.webContents.send('play', url)
     }
 }
 
