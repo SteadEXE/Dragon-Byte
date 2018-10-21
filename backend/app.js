@@ -11,4 +11,6 @@ app.on('ready', async () => {
 
     Player.init()
     HTTP.init()
+
+    Player.play()
 })

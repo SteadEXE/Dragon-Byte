@@ -53,7 +53,7 @@ class QueueHandler {
                     const user = await User.findOne({ token: socket.token })
 
                     let pending = new Pending({
-                        user: user,
+                        owner: user,
                         track: track
                     })
 

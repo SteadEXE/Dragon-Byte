@@ -4,6 +4,7 @@ const SocketIO = require('socket.io')
 const Console = require('../Console')
 const UserHandler = require('./Handler/UserHandler')
 const QueueHandler = require('./Handler/QueueHandler')
+const User = require('../Models/User')
 
 class HTTP {
     init () {
@@ -15,7 +16,7 @@ class HTTP {
 
         io.on('connection', (socket) => {
             Console.info('Connection accepted.')
-            
+
             UserHandler.handle(socket)
             QueueHandler.handle(socket)
         })
