@@ -6,10 +6,13 @@ const Track = require('../../Models/Track')
 const User = require('../../Models/User')
 const Pending = require('../../Models/Pending')
 const Console = require('../../Console')
+const Sockets = require('../Sockets')
 
 class QueueHandler {
     handle (socket) {
-        socket.on('queue.push', async (link) => {
+        this.broadcastQueue(socket)
+
+        socket.on('queue/push', async (link) => {
             // Check that socket is signed-in.
             if (socket.token === null) {
                 return
@@ -65,6 +68,27 @@ class QueueHandler {
                 Console.error(`Unable to request ${payload}`)
             })
         })
+    }
+
+    async broadcastQueue (socket = Socket.io) {
+        let pendings = await Pending.find({})
+            .populate('track')
+            .populate('owner')
+        
+        pendings = pendings.map(({ track, owner }) => {
+            return {
+                track: {
+                    title: track.title,
+                    played: track.played
+                },
+                owner: {
+                    nickname: owner.username,
+                    experience: owner.experience
+                }
+            }
+        })
+
+        socket.emit('queue/tracks', pendings)
     }
 }
 

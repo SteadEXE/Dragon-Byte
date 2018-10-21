@@ -4,6 +4,9 @@
             <div class="col-4">
                 <queue></queue>
             </div>
+            <div class="col-4">
+                <history></history>
+            </div>
         </div>
         <player></player>
     </div>
@@ -12,11 +15,13 @@
 <script>
     import Player from '@/components/player/Player'
     import Queue from '@/components/player/Queue'
+    import History from '@/components/player/History'
 
     export default {
         components: {
             player: Player,
-            queue: Queue
+            queue: Queue,
+            history: History
         }
     }
 </script>

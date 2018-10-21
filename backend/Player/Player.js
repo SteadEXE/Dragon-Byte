@@ -4,6 +4,7 @@ const States = require('./Constants/States')
 const PlayerUpdate = require('./Constants/Updates')
 const PlayerFirewall = require('./PlayerFirewall')
 const Pending = require('../Models/Pending')
+const History = require('../Models/History')
 const Console = require('../Console')
 
 class Player extends EventEmitter {
@@ -72,10 +73,21 @@ class Player extends EventEmitter {
     }
 
     async play () {
-        let pending = await Pending.findOne({})
+        let pending = await Pending.findOneAndDelete({})
                                 .populate('track')
                                 .populate('owner')
                                 .sort({ _id: '-1' })
+
+        // Increase played time
+        pending.track.played++
+
+        let history = new History({
+            owner: pending.owner,
+            track: pending.track
+        })
+
+        await pending.save()
+        await history.save()
 
         if (pending !== null) {
             this.current = pending
