@@ -1,7 +1,7 @@
 const { BrowserWindow, ipcMain } = require('electron')
 const EventEmitter = require('events').EventEmitter
-const PlayerState = require('./Constants/State')
-const PlayerUpdate = require('./Constants/Update')
+const States = require('./Constants/States')
+const PlayerUpdate = require('./Constants/Updates')
 const PlayerFirewall = require('./PlayerFirewall')
 const Pending = require('../Models/Pending')
 const Console = require('../Console')
@@ -11,7 +11,7 @@ class Player extends EventEmitter {
         super()
 
         this.window = null
-        this.state = PlayerState.INITITIALIZING
+        this.state = States.INITITIALIZING
 
         this.duration = 0
         this.elapsed = 0
@@ -39,19 +39,31 @@ class Player extends EventEmitter {
         }
 
         ipcMain.on('play', () => {
+            this.state = States.PLAYING
             this.emit('update', PlayerUpdate.FULL)
+
+            Console.positive(`Now playing ${this.current.track.title}.`, 'PLAYER')
         })
 
-        ipcMain.on('end', (event, blocked) => {
-            this.state = PlayerState.IDLE
+        ipcMain.on('update', (event, elapsed, duration) => {
+            this.elapsed = Math.round(elapsed)
+            this.duration = Math.round(duration)
+
+            this.emit('update', PlayerUpdate.UPDATE)
+        })
+
+        ipcMain.on('ended', (event, blocked) => {
+            this.state = States.IDLE
 
             this.emit('update', PlayerUpdate.FULL)
             this.play()
         })
 
         ipcMain.on('load', () => {
-            this.state = PlayerState.LOADING
+            this.state = States.LOADING
             this.emit('update', PlayerUpdate.STATE)
+
+            Console.positive(`Now loading ${this.current.track.title}.`, 'PLAYER')
         })
     }
 
@@ -62,6 +74,7 @@ class Player extends EventEmitter {
     async play () {
         let pending = await Pending.findOne({})
                                 .populate('track')
+                                .populate('owner')
                                 .sort({ _id: '-1' })
 
         if (pending !== null) {
@@ -71,8 +84,6 @@ class Player extends EventEmitter {
             let url = `https://www.youtube.com/watch?v=${pending.track.videoId}`
 
             this.window.webContents.send('play', url)
-
-            Console.positive(`Now playing ${pending.track.title}.`, 'PLAYER')
         }
     }
 }

@@ -4,6 +4,7 @@ const SocketIO = require('socket.io')
 const Console = require('../Console')
 const UserHandler = require('./Handler/UserHandler')
 const QueueHandler = require('./Handler/QueueHandler')
+const PlayerHandler = require('./Handler/PlayerHandler')
 const Sockets = require('./Sockets')
 
 class HTTP {
@@ -19,6 +20,7 @@ class HTTP {
 
             UserHandler.handle(socket)
             QueueHandler.handle(socket)
+            PlayerHandler.handle(socket)
 
             socket.on('disconnect', () => {
                 Console.network(`Disconnected socket ${socket.id}.`)

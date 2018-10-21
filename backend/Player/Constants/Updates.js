@@ -1,5 +1,5 @@
 module.exports = {
     FULL: 'full',
-    TIMES: 'times',
+    UPDATE: 'update',
     STATE: 'state'
 }
