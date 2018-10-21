@@ -1,12 +1,20 @@
 const chalk = require('chalk')
 
 class Console {
-    info (text) {
-        console.log(`${chalk.bgBlue.white(' INFO ')} ${chalk.white(text)}`)
+    info (text, title = 'INFO') {
+        console.log(`${chalk.bgBlue.white(title)} ${chalk.white(text)}`)
     }
 
-    error (text) {
-        console.log(`${chalk.bgRed.white(' ERROR ')} ${chalk.white(text)}`)
+    positive (text, title = 'SUCCESS') {
+        console.log(`${chalk.bgGreen.white(title)} ${chalk.white(text)}`)
+    }
+
+    network (text, title = 'NETWORK') {
+        console.log(`${chalk.bgYellow.white(title)} ${chalk.white(text)}`)
+    }
+
+    error (text, title = 'ERROR') {
+        console.log(`${chalk.bgRed.white(title)} ${chalk.white(text)}`)
     }
 }
 

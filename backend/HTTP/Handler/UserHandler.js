@@ -1,4 +1,5 @@
 const crypto = require('crypto')
+const Sockets = require('../Sockets')
 const User = require('../../Models/User')
 
 class UserHandler {
@@ -74,6 +75,8 @@ class UserHandler {
             if (user !== null) {
                 socket.token = token
             }
+
+            Sockets.sockets[socket.token] = token
 
             socket.emit('authorization')
         })

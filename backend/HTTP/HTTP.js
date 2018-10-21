@@ -4,7 +4,7 @@ const SocketIO = require('socket.io')
 const Console = require('../Console')
 const UserHandler = require('./Handler/UserHandler')
 const QueueHandler = require('./Handler/QueueHandler')
-const User = require('../Models/User')
+const Sockets = require('./Sockets')
 
 class HTTP {
     init () {
@@ -12,13 +12,23 @@ class HTTP {
 
         const server = http.createServer(app)
 
-        const io = new SocketIO(server)
+        Sockets.io = new SocketIO(server)
 
-        io.on('connection', (socket) => {
-            Console.info('Connection accepted.')
+        Sockets.io.on('connection', (socket) => {
+            Console.network(`Accepted socket ${socket.id}.`)
 
             UserHandler.handle(socket)
             QueueHandler.handle(socket)
+
+            socket.on('disconnect', () => {
+                Console.network(`Disconnected socket ${socket.id}.`)
+
+                if (!socket.token) {
+                    return
+                }
+
+                delete Sockets.sockets[socket.token]
+            })
         })
 
         server.listen(8000)

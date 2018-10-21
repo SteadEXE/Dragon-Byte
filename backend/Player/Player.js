@@ -1,8 +1,10 @@
 const { BrowserWindow, ipcMain } = require('electron')
 const EventEmitter = require('events').EventEmitter
-const PlayerState = require('./PlayerState')
+const PlayerState = require('./Constants/State')
+const PlayerUpdate = require('./Constants/Update')
 const PlayerFirewall = require('./PlayerFirewall')
 const Pending = require('../Models/Pending')
+const Console = require('../Console')
 
 class Player extends EventEmitter {
     constructor () {
@@ -17,8 +19,6 @@ class Player extends EventEmitter {
         this.updated = 0
 
         this.current = null
-
-        this.emit('update')
     }
 
     init () {
@@ -39,23 +39,23 @@ class Player extends EventEmitter {
         }
 
         ipcMain.on('play', () => {
-            this.emit('update')
+            this.emit('update', PlayerUpdate.FULL)
         })
 
         ipcMain.on('end', (event, blocked) => {
             this.state = PlayerState.IDLE
 
-            this.emit('update')
+            this.emit('update', PlayerUpdate.FULL)
             this.play()
         })
 
         ipcMain.on('load', () => {
             this.state = PlayerState.LOADING
-            this.emit('update')
+            this.emit('update', PlayerUpdate.STATE)
         })
     }
 
-    next () {
+    async next () {
         this.window.webContents.send('stop')
     }
 
@@ -71,6 +71,8 @@ class Player extends EventEmitter {
             let url = `https://www.youtube.com/watch?v=${pending.track.videoId}`
 
             this.window.webContents.send('play', url)
+
+            Console.positive(`Now playing ${pending.track.title}.`, 'PLAYER')
         }
     }
 }
