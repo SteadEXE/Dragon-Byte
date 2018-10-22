@@ -6,7 +6,8 @@ Vue.use(Vuex)
 export default {
     namespaced: true,
     state: {
-        connected: false
+        connected: false,
+        ping: 0
     },
     mutations: {
         CONNECT (state) {
@@ -14,6 +15,9 @@ export default {
         },
         DISCONNECT (state) {
             state.connected = false
+        },
+        PING (state, ping) {
+            state.ping = ping
         }
     },
     actions: {
@@ -22,6 +26,9 @@ export default {
         },
         disconnect (context) {
             context.commit('DISCONNECT')
+        },
+        ping (context, ping) {
+            context.commit('PING', ping)
         }
     }
 }

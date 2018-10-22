@@ -32,6 +32,10 @@ class HTTP {
             PlayerHandler.handle(socket)
             HistoryHandler.handle(socket)
 
+            socket.on('net/ping', () => {
+                socket.emit('net/pong')
+            })
+
             socket.on('disconnect', () => {
                 Console.network(`Disconnected socket ${socket.id}.`)
 
