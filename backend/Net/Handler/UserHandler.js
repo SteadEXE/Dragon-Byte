@@ -77,8 +77,21 @@ class UserHandler {
             }
 
             Sockets.sockets[socket.token] = token
+            user.session = Sockets.session
+
+            await user.save()
 
             socket.emit('authorization')
+        })
+
+        socket.on('disconnect', async () => {
+            if (socket.token) {
+                await User.findOneAndUpdate({
+                    token: socket.token
+                }, {
+                    session: ''
+                })
+            }
         })
     }
 }
