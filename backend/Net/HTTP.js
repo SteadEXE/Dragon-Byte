@@ -1,4 +1,5 @@
 const http = require('http')
+const path = require('path')
 const express = require('express')
 const SocketIO = require('socket.io')
 const Console = require('../Console')
@@ -11,6 +12,13 @@ const Sockets = require('./Sockets')
 class HTTP {
     init () {
         const app = express()
+
+        app.use('/', express.static(path.resolve(__dirname, '../../frontend/dist')))
+
+        app.use('*', (req, res) => {
+            res.sendFile(path.resolve(__dirname, '../../frontend/dist/index.html'))
+            res.end()
+        })
 
         const server = http.createServer(app)
 

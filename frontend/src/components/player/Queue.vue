@@ -16,7 +16,7 @@
             </div>
         </div>
 
-        <div class="card bg-dark text-light shadow-lg">
+        <div class="card bg-dark text-light shadow-lg" v-if="pendings.length > 0">
             <div class="card-header text-center text-uppercase">File d'attente</div>
             <div class="card-body p-0">
                 <entry v-for="(item, index) in pendings" :entry="item" :key="index"></entry>
