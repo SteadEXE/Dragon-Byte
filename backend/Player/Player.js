@@ -96,7 +96,7 @@ class Player extends EventEmitter {
             track: pending.track
         })
 
-        await pending.save()
+        await pending.track.save()
         await history.save()
 
         this.current = pending
