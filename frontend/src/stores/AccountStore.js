@@ -6,7 +6,8 @@ Vue.use(Vuex)
 export default {
     namespaced: true,
     state: {
-        authentified: false
+        authentified: false,
+        account: null
     },
     mutations: {
         AUTHENTIFICATE (state) {
@@ -14,7 +15,7 @@ export default {
         }
     },
     actions: {
-        authentificate (context) {
+        authentificate (context, token) {
             context.commit('AUTHENTIFICATE')
         }
     }

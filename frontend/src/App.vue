@@ -3,6 +3,7 @@
     <div v-if="connected">
       <div v-if="authentified">
         <router-view></router-view>
+        <navigation></navigation>
       </div>
       <!-- Utilisateur non connecté. -->
       <div v-else>
@@ -17,19 +18,21 @@
 </template>
 
 <script>
-  import bootstrap from './assets/css/bootstrap.min.css'
-  import fontawesome from './assets/css/fontawesome.min.css'
+  import bootstrap from '@/assets/css/bootstrap.min.css'
+  import fontawesome from '@/assets/css/fontawesome.min.css'
   
   import { mapState } from 'vuex'
 
-  import Socket from './Socket.js'
-  import ErrorMessage from './components/ErrorMessage'
-  import Login from './views/Login'
+  import Socket from '@/Socket.js'
+  import ErrorMessage from '@/components/ErrorMessage'
+  import Navigation from '@/components/Navigation'
+  import Login from '@/views/Login'
 
   export default {
     components: { 
       errorMessage: ErrorMessage,
-      login: Login
+      login: Login,
+      navigation: Navigation
     },
     computed: mapState({
       connected: state => state.socket.connected,
@@ -42,7 +45,7 @@
   body {
     background: rgb(50, 50, 50);
     font-family: 'Helvetica', 'Arial', sans-serif;
-    padding: 20px;
+    padding: 20px 20px 70px 20px;
   }
 </style>
 
