@@ -56,11 +56,10 @@ class Player extends EventEmitter {
         })
 
         ipcMain.on('ended', (event, blocked) => {
-            this.state = States.IDLE
-            this.current = null
-
             Console.positive(`Now cleaning ${this.current.track.title}.`, '  PLAYER  ')
 
+            this.state = States.IDLE
+            this.current = null
             this.emit('update', PlayerUpdate.FULL)
             this.play()
         })
