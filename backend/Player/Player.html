@@ -45,20 +45,16 @@
 
         Protoxyde.OnEnd = () => {
             ipcRenderer.send('ended', false) // false means no problem occured.
-            Protoxyde.Player.removeEventListener('play', Protoxyde.OnPlay)
-            Protoxyde.Player.removeEventListener('ended', Protoxyde.OnEnd)
             Protoxyde.Player.removeEventListener('timeupdate', Protoxyde.OnUpdate)
+            Protoxyde.Player.removeEventListener('timeupdate', Protoxyde.OnPlay, { once: true })
             Protoxyde.Browser.src = ''
         }
 
         Protoxyde.OnUpdate = () => {
             ipcRenderer.send('update', Protoxyde.Player.currentTime, Protoxyde.Player.duration)
 
-            // Manually trigger play event if not triggered.
-            if (!Protoxyde.Playing && Protoxyde.Player.currentTime > 0) {
-                Protoxyde.Playing = true
-
-                ipcRenderer.send('play')
+            if (Protoxyde.Player.currentTime == Protoxyde.Player.duration) {
+                Protoxyde.OnEnd()
             }
         }
 
@@ -73,9 +69,8 @@
                 return
             }
             // Inject some code to youtube :>
-            Protoxyde.Player.addEventListener('play', Protoxyde.OnPlay)
-            Protoxyde.Player.addEventListener('ended', Protoxyde.OnEnd)
             Protoxyde.Player.addEventListener('timeupdate', Protoxyde.OnUpdate)
+            Protoxyde.Player.addEventListener('timeupdate', Protoxyde.OnPlay, { once: true })
 
             Protoxyde.Playing = false
 
