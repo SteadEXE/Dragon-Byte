@@ -59,6 +59,8 @@ class Player extends EventEmitter {
             this.state = States.IDLE
             this.current = null
 
+            Console.positive(`Now cleaning ${this.current.track.title}.`, '  PLAYER  ')
+
             this.emit('update', PlayerUpdate.FULL)
             this.play()
         })
