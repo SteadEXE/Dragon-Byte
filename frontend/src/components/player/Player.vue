@@ -41,9 +41,7 @@
         })
     }
 
-    const socket = Socket.getInstance()
-
-    socket.on('player/status', payload => {
+    Socket.on('player/status', payload => {
         Store.dispatch('update', payload)
     })
 </script>

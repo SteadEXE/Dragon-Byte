@@ -1,18 +1,18 @@
 <template>
   <div>
-    <div v-if="connected">
-      <div v-if="authentified">
+    <div v-if="authentified">
+      <div v-if="connected">
         <router-view></router-view>
         <navigation></navigation>
       </div>
       <!-- Utilisateur non connecté. -->
       <div v-else>
-        <login></login>
+        <error-message></error-message>
       </div>
     </div>
     <!-- Pas de connexion au serveur -->
     <div v-else>
-      <error-message></error-message>
+      <login></login>
     </div>
   </div>
 </template>

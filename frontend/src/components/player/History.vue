@@ -21,7 +21,7 @@
         })
     }
 
-    Socket.getInstance().on('history/tracks', tracks => {
+    Socket.on('history/tracks', tracks => {
         Store.dispatch('SET_TRACKS', tracks)
     })
 </script>

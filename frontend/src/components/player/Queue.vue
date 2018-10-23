@@ -48,14 +48,14 @@
             push (event) {
                 event.preventDefault()
 
-                Socket.getInstance().emit('queue/push', this.url)
+                Socket.emit('queue/push', this.url)
 
                 this.url = ''
             }
         }
     }
 
-    Socket.getInstance().on('queue/tracks', pendings => {
+    Socket.on('queue/tracks', pendings => {
         Store.dispatch('SET_PENDINGS', pendings)
     })
 </script>

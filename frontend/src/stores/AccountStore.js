@@ -7,16 +7,16 @@ export default {
     namespaced: true,
     state: {
         authentified: false,
-        account: null
+        account: null,
     },
     mutations: {
-        AUTHENTIFICATE (state) {
+        AUTHENTICATE (state) {
             state.authentified = true
         }
     },
     actions: {
-        authentificate (context, token) {
-            context.commit('AUTHENTIFICATE')
+        authenticate (context, token) {
+            context.commit('AUTHENTICATE')
         }
     }
 }
