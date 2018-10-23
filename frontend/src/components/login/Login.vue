@@ -78,10 +78,10 @@
                     return
                 }
 
-                const token = data.content.token
+                const token = data.content.account.token
                 
                 window.localStorage.setItem('auth-token', token)
-
+                
                 this.connect(token)
             },
             connect (token) {

@@ -12,11 +12,17 @@ export default {
     mutations: {
         AUTHENTICATE (state) {
             state.authentified = true
+        },
+        UPDATE (state, account) {
+            state.account = account
         }
     },
     actions: {
         authenticate (context, token) {
             context.commit('AUTHENTICATE')
+        },
+        update (context, account) {
+            context.commit('UPDATE', account)
         }
     }
 }

@@ -1,8 +1,10 @@
 <template>
     <nav class="navbar navbar-dark bg-primary fixed-bottom navbar-expand-lg">
         <div class="text-center navbar-text text-font-bold mx-auto">
-            <i class="fas fa-user-circle"></i> Stead 
-            <i class="fas fa-star"></i> 1,458,892 XP
+            <div v-if="account">
+                <i class="fas fa-user-circle"></i> {{ account.nickname }}
+                <i class="fas fa-star"></i> {{ account.experience }} XP
+            </div>
         </div>
         <div class="navbar-text mr-3">
             <i class="fas fa-signal-4" v-if="ping < 50"></i>
@@ -31,7 +33,8 @@
             }
         },
         computed: mapState({
-            ping: state => state.socket.ping
+            ping: state => state.socket.ping,
+            account: state => state.account.account
         })
     }
 </script>

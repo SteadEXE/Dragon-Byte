@@ -24,7 +24,11 @@ class SecurityController
         } else {
             payload.status = 'ok'
             payload.content = {
-                token: user.token
+                account: {
+                    token: user.token,
+                    nicknanme: user.nickname,
+                    experience: user.experience
+                }
             }
         }
 

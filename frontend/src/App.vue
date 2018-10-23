@@ -37,7 +37,12 @@
     computed: mapState({
       connected: state => state.socket.connected,
       authentified: state => state.account.authentified
-    })
+    }),
+    created () {
+      Socket.on('account/update', account => {
+        this.$store.dispatch('account/update', account)
+      })
+    }
   }
 </script>
 
