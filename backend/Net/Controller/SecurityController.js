@@ -30,6 +30,65 @@ class SecurityController
             }
         }
 
+        setTimeout(() => {
+            res.json(payload)
+        }, 1000)
+    }
+
+    async register (req, res) {
+        const username = req.body.username.toLowerCase().trim()
+        const password = req.body.password.trim()
+        const email = req.body.email.trim()
+
+        let user = await User.findOne({
+            $or: [
+                { username: username },
+                { email: email }
+            ]
+        })
+
+        let payload = { }
+
+        if (user !== null) {
+            payload.status = 'err'
+            payload.message = 'Un compte existe déjà avec cette adresse email ou cet utilisateur.'
+
+            res.json(payload)
+            return
+        }
+
+        if (username.length < 3 || username.length > 30) {
+            payload.status = 'err'
+            payload.message = 'Le nom d\'utilisateur doit être comprit entre 3 et 30 caractères.'
+
+            res.json(payload)
+            return
+        }
+
+        if (password.length < 6 || password.length > 256) {
+            payload.status = 'err'
+            payload.message = 'Le mot de passe doit être comprit entre 6 et 256 caractères.'
+
+            res.json(payload)
+            return
+        }
+
+        const hash = crypto.createHash('sha256')
+                            .update(password)
+                            .digest('hex')
+
+        const token = crypto.randomBytes(16).toString('hex')
+
+        await User.create({
+            username: username,
+            email: email,
+            password: hash,
+            token: token
+        })
+
+        payload.status = 'ok'
+        payload.message = 'Votre compte a été crée avec succès.'
+
         res.json(payload)
     }
 }

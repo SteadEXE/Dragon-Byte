@@ -1,12 +1,15 @@
 <template>
     <div class="card bg-dark text-light shadow-lg">
-        <div class="card-header text-center">Connexion</div>
+        <div class="card-header text-center">Inscription</div>
         <div class="card-body">
-            <div class="alert alert-danger" v-if="message">
-                <i class="fas fa-exclamation-triangle mr-2"></i> {{ message }}
+            <div class="alert alert-danger" v-if="errorMessage">
+                <i class="fas fa-exclamation-triangle mr-2"></i> {{ errorMessage }}
+            </div>
+            <div class="alert alert-success" v-if="successMessage">
+                <i class="fas fa-check-circle"></i> {{ successMessage }}
             </div>
             <div v-if="!busy">
-                <form @submit="auth">
+                <form @submit="register">
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text">
@@ -25,8 +28,17 @@
                         <input type="password" class="form-control" placeholder="Mot de passe" v-model="password">
                     </div>
 
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <i class="fas fa-at"></i>
+                            </span>
+                        </div>
+                        <input type="email" class="form-control" placeholder="Adresse email" v-model="email">
+                    </div>
+
                     <button type="submit" class="btn btn-primary btn-block" :disabled="busy">
-                        Connexion
+                        Inscription
                     </button>
                 </form>
             </div>
@@ -39,58 +51,41 @@
 
 <script>
     import axios from 'axios'
-    import Socket from '@/Socket'
 
     export default {
         data () {
             return {
                 username: '',
                 password: '',
+                email: '',
                 busy: false,
-                message: ''
-            }
-        },
-        beforeMount () {
-            const token = window.localStorage.getItem('auth-token')
-
-            if (token !== null) {
-                this.busy = true
-                this.connect(token)
+                errorMessage: '',
+                successMessage: ''
             }
         },
         methods: {
-            async auth (event) {
+            async register (event) {
                 event.preventDefault()
 
                 this.busy = true
-                this.message = ''
+                this.errorMessage = ''
+                this.successMessage = ''
 
-                let response = await axios.post(`http://${window.location.host}/api/auth`, {
+                let response = await axios.post(`http://${window.location.host}/api/register`, {
                     username: this.username,
-                    password: this.password
+                    password: this.password,
+                    email: this.email
                 })
 
                 let data = response.data
 
                 if (data.status === 'err') {
                     this.busy = false
-                    this.message = data.message
-                    return
+                    this.errorMessage = data.message
+                } else {
+                    this.busy = false
+                    this.successMessage = data.message
                 }
-
-                const token = data.content.account.token
-                
-                window.localStorage.setItem('auth-token', token)
-                
-                this.connect(token)
-            },
-            connect (token) {
-                Socket.once('connect', () => {
-                    this.$store.dispatch('account/authenticate')
-                })
-
-                Socket.io.opts.query = { token }
-                Socket.connect()
             }
         }
     }
