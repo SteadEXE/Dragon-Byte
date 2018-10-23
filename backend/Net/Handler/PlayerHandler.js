@@ -23,24 +23,18 @@ class PlayerHandler {
 
         switch (type) {
             case Updates.FULL:
+                packet.state = Player.state
+
                 if (Player.current) {
-                    packet = {
-                        state: Player.state,
-                        track: {
-                            title: Player.current.track.title,
-                            duration: Player.duration,
-                            elapsed: Player.elapsed
-                        },
-                        owner: {
-                            nickname: Player.current.owner.username,
-                            experience: Player.current.owner.experience
-                        }
+                    packet.track = {
+                        title: Player.current.track.title,
+                        duration: Player.duration,
+                        elapsed: Player.elapsed
                     }
-                } else {
-                    packet = {
-                        state: Player.state,
-                        track: null,
-                        owner: null
+
+                    packet.owner = {
+                        nickname: Player.current.owner.username,
+                        experience: Player.current.owner.experience
                     }
                 }
                 break

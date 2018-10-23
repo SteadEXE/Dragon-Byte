@@ -60,6 +60,8 @@ class Player extends EventEmitter {
 
             this.state = States.IDLE
             this.current = null
+            this.duration = 0
+            this.elapsed = 0
             this.emit('update', PlayerUpdate.FULL)
             this.play()
         })
@@ -89,12 +91,6 @@ class Player extends EventEmitter {
                                 .sort({ _id: '-1' })
 
         if (pending === null) {
-            this.current = null
-            this.elapsed = 0
-            this.duration = 0
-            this.state = States.IDLE
-
-            this.emit('update', PlayerUpdate.FULL)
             return
         }
 
