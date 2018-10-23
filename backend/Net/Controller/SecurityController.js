@@ -25,9 +25,7 @@ class SecurityController
             payload.status = 'ok'
             payload.content = {
                 account: {
-                    token: user.token,
-                    nicknanme: user.nickname,
-                    experience: user.experience
+                    token: user.token
                 }
             }
         }

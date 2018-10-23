@@ -13,8 +13,4 @@ Socket.on('disconnect', () => {
     Store.dispatch('socket/disconnect')
 })
 
-Socket.on('account', account => {
-    Store.dispatch('account/update', account)
-})
-
 export default Socket
