@@ -20,6 +20,7 @@
 <script>
   import bootstrap from '@/assets/css/bootstrap.min.css'
   import fontawesome from '@/assets/css/fontawesome.min.css'
+  import roboto from '@/assets/webfonts/roboto/roboto.css'
   
   import { mapState } from 'vuex'
 
@@ -49,7 +50,8 @@
 <style>
   body {
     background: rgb(50, 50, 50);
-    font-family: 'Helvetica', 'Arial', sans-serif;
+    font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+    font-weight: lighter;
     padding: 20px 20px 70px 20px;
   }
 </style>
