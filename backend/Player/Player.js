@@ -32,6 +32,7 @@ class Player extends EventEmitter {
             PlayerFirewall.filter(this.window)
 
             this.window.webContents.on('dom-ready', () => {
+                this.state = States.IDLE
                 this.play()
             })
 
@@ -44,7 +45,7 @@ class Player extends EventEmitter {
 
             this.emit('update', PlayerUpdate.FULL)
 
-            Console.positive(`Now playing ${this.current.track.title}.`, 'PLAYER')
+            Console.positive(`Now playing ${this.current.track.title}.`, '  PLAYER  ')
         })
 
         ipcMain.on('update', (event, elapsed, duration) => {
@@ -56,6 +57,7 @@ class Player extends EventEmitter {
 
         ipcMain.on('ended', (event, blocked) => {
             this.state = States.IDLE
+            this.current = null
 
             this.emit('update', PlayerUpdate.FULL)
             this.play()
@@ -65,7 +67,7 @@ class Player extends EventEmitter {
             this.state = States.LOADING
             this.emit('update', PlayerUpdate.FULL)
 
-            Console.positive(`Now loading ${this.current.track.title}.`, 'PLAYER')
+            Console.positive(`Now loading ${this.current.track.title}.`, '  PLAYER  ')
         })
     }
 
@@ -74,6 +76,12 @@ class Player extends EventEmitter {
     }
 
     async play () {
+        if (this.state !== States.IDLE) {
+            return
+        }
+
+        this.state = States.LOADING
+
         let pending = await Pending.findOneAndDelete({})
                                 .populate('track')
                                 .populate('owner')
@@ -83,10 +91,13 @@ class Player extends EventEmitter {
             this.current = null
             this.elapsed = 0
             this.duration = 0
+            this.state = States.IDLE
 
             this.emit('update', PlayerUpdate.FULL)
             return
         }
+
+        this.current = pending
 
         // Increase played time
         pending.track.played++
@@ -98,8 +109,6 @@ class Player extends EventEmitter {
 
         await pending.track.save()
         await history.save()
-
-        this.current = pending
 
         // Generate video from 
         let url = `https://www.youtube.com/watch?v=${pending.track.videoId}`
