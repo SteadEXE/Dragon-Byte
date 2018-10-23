@@ -17,12 +17,14 @@ class UserHandler {
             }, {
                 session: ''
             })
+
+            this.broadcastOnline()
         })
 
-        this.broadcastOnline(socket)
+        this.broadcastOnline()
     }
 
-    async broadcastOnline (socket = Socket.io) {
+    async broadcastOnline () {
         let users = await User.find({ session: Sockets.session })
 
         users = users.map(user => {
@@ -32,7 +34,7 @@ class UserHandler {
             }
         })
 
-        socket.emit('users/online', users)
+        Sockets.io.emit('users/online', users)
     }
 }
 
