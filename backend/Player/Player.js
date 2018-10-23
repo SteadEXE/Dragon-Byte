@@ -49,10 +49,15 @@ class Player extends EventEmitter {
         })
 
         ipcMain.on('update', (event, elapsed, duration) => {
-            this.elapsed = Math.round(elapsed)
-            this.duration = Math.round(duration)
+            elapsed = Math.round(elapsed)
+            duration = Math.round(duration)
 
-            this.emit('update', PlayerUpdate.UPDATE)
+            if (elapsed != this.elapsed || duration != this.duration) {
+                this.elapsed = Math.round(elapsed)
+                this.duration = Math.round(duration)
+
+                this.emit('update', PlayerUpdate.UPDATE)
+            }
         })
 
         ipcMain.on('ended', (event, blocked) => {
@@ -62,7 +67,8 @@ class Player extends EventEmitter {
             this.current = null
             this.duration = 0
             this.elapsed = 0
-            this.emit('update', PlayerUpdate.FULL)
+
+            this.emit('update', PlayerUpdate.STATE)
             this.play()
         })
 
@@ -83,8 +89,6 @@ class Player extends EventEmitter {
             return
         }
 
-        this.state = States.LOADING
-
         let pending = await Pending.findOneAndDelete({})
                                 .populate('track')
                                 .populate('owner')
@@ -94,6 +98,7 @@ class Player extends EventEmitter {
             return
         }
 
+        this.state = States.LOADING
         this.current = pending
 
         // Increase played time

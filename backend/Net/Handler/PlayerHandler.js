@@ -15,10 +15,6 @@ class PlayerHandler {
     }
 
     broadcastUpdate (type, socket = Sockets.io) {
-        if (Player.current === null) {
-            return
-        }
-
         let packet = { }
 
         switch (type) {
