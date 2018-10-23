@@ -25,6 +25,10 @@ class QueueHandler {
                 return
             }
 
+            if (link.trim().length == 0) {
+                return
+            }
+
             // Go on link to perform some check and retrieve title of page.
             const req = request(link)
 

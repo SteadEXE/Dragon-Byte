@@ -39,6 +39,8 @@
 
         Protoxyde.OnPlay = () => {
             ipcRenderer.send('play')
+
+            Protoxyde.Playing = true
         }
 
         Protoxyde.OnEnd = () => {
@@ -51,6 +53,13 @@
 
         Protoxyde.OnUpdate = () => {
             ipcRenderer.send('update', Protoxyde.Player.currentTime, Protoxyde.Player.duration)
+
+            // Manually trigger play event if not triggered.
+            if (!Protoxyde.Playing && Protoxyde.Player.currentTime > 0) {
+                Protoxyde.Playing = true
+
+                ipcRenderer.send('play')
+            }
         }
 
         Protoxyde.OnIFrameLoad = () => {
@@ -64,9 +73,11 @@
                 return
             }
             // Inject some code to youtube :>
-            Protoxyde.Player.addEventListener('canplay', Protoxyde.OnPlay)
+            Protoxyde.Player.addEventListener('play', Protoxyde.OnPlay)
             Protoxyde.Player.addEventListener('ended', Protoxyde.OnEnd)
             Protoxyde.Player.addEventListener('timeupdate', Protoxyde.OnUpdate)
+
+            Protoxyde.Playing = false
 
             Protoxyde.Player.pause()
             Protoxyde.Player.play()
