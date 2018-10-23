@@ -18,6 +18,21 @@ class UserHandler {
                 session: ''
             })
         })
+
+        this.broadcastOnline(socket)
+    }
+
+    async broadcastOnline (socket = Socket.io) {
+        let users = await User.find({ session: Sockets.session })
+
+        users = users.map(user => {
+            return {
+                nickname: user.username,
+                experience: user.experience
+            }
+        })
+
+        socket.emit('users/online', users)
     }
 }
 

@@ -6,6 +6,7 @@
             </div>
             <div class="col-4">
                 <player></player>
+                <online></online>
             </div>
             <div class="col-4">
                 <history></history>
@@ -18,12 +19,14 @@
     import Player from '@/components/player/Player'
     import Queue from '@/components/player/Queue'
     import History from '@/components/player/History'
+    import Online from '@/components/users/Online'
 
     export default {
         components: {
             player: Player,
             queue: Queue,
-            history: History
+            history: History,
+            online: Online
         }
     }
 </script>

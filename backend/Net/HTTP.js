@@ -50,8 +50,12 @@ class HTTP {
                 return
             }
 
-            Console.network(`Accepted socket ${user.username} (${socket.id})`)
             socket.token = token
+            user.session = Sockets.session
+
+            await user.save()
+
+            Console.network(`Accepted socket ${user.username} (${socket.id})`)
             next()
         })
 
