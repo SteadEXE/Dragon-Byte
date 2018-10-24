@@ -37,7 +37,6 @@ class Player extends EventEmitter {
             })
 
             this.window.loadURL(`file:///${__dirname}/Player.html`)
-
         }
 
         ipcMain.on('play', () => {
@@ -48,25 +47,21 @@ class Player extends EventEmitter {
             Console.positive(`Now playing ${this.current.track.title}.`, '  PLAYER  ')
         })
 
-        ipcMain.on('update', (event, elapsed, duration) => {
+        ipcMain.on('update', async (event, elapsed, duration) => {
             elapsed = Math.round(elapsed)
             duration = Math.round(duration)
+
+            if (this.updated === 0) {
+                this.updated = Date.now()
+            }
 
             if (elapsed != this.elapsed || duration != this.duration) {
                 this.elapsed = Math.round(elapsed)
                 this.duration = Math.round(duration)
 
                 this.emit('update', PlayerUpdate.UPDATE)
+                this.emit('progress')
             }
-
-            // Give experience to owner
-            if (this.updated === 0) {
-                this.updated = Date.now()
-            }
-
-            let experience = Math.round((Date.now() - this.updated) / 1000)
-
-
         })
 
         ipcMain.on('ended', (event, blocked) => {
