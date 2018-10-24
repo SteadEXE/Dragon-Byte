@@ -1,14 +1,14 @@
 <template>
     <div>
         <div class="row">
-            <div class="col-4">
+            <div class="col-sm-4">
                 <queue></queue>
             </div>
-            <div class="col-4">
+            <div class="col-sm-4">
                 <player></player>
                 <online></online>
             </div>
-            <div class="col-4">
+            <div class="col-sm-4">
                 <history></history>
             </div>
         </div>
