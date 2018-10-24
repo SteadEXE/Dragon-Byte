@@ -60,6 +60,9 @@ class HTTP {
         })
 
         Sockets.io.on('connection', (socket) => {
+            // Make client join his own room.
+            socket.join(socket.token)
+
             UserHandler.handle(socket)
             QueueHandler.handle(socket)
             PlayerHandler.handle(socket)
@@ -67,16 +70,6 @@ class HTTP {
 
             socket.on('net/ping', () => {
                 socket.emit('net/pong')
-            })
-
-            socket.on('disconnect', () => {
-                Console.network(`Disconnected socket ${socket.id}.`)
-
-                if (!socket.token) {
-                    return
-                }
-
-                delete Sockets.sockets[socket.token]
             })
         })
 

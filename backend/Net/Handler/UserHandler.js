@@ -34,13 +34,13 @@ class UserHandler {
         })
 
         socket.on('disconnect', async () => {
-            await User.findOneAndUpdate({
-                token: socket.token
-            }, {
-                session: ''
-            })
+            let room = Sockets.io.nsps['/'].adapter.rooms[socket.token]
 
-            this.broadcastOnline()
+            if (!room) {
+                await User.findOneAndUpdate({ token: socket.token }, { session: '' })
+
+                this.broadcastOnline()
+            }
         })
 
         this.broadcastOnline()
