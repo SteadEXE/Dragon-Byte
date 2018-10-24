@@ -8,7 +8,7 @@ class AccountUpdatePacket {
     }
 
     payload () {
-        return this.user
+        return this.user.export()
     }
 }
 

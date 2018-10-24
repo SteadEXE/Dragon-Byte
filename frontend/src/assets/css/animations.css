@@ -1,5 +1,5 @@
 .flashing {
-    animation: flashing .8s ease infinite alternate-reverse;
+    animation: flashing .8s ease infinite alternate;
 }
 
 @keyframes flashing {
