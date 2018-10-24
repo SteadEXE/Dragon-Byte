@@ -1,6 +1,7 @@
 const Sockets = require('../Sockets')
 const Player = require('../../Player/Player')
 const Updates = require('../../Player/Constants/Updates')
+const States = require('../../Player/Constants/States')
 
 class PlayerHandler {
     constructor () {
@@ -12,6 +13,12 @@ class PlayerHandler {
 
     handle (socket) {
         this.broadcastUpdate(Updates.FULL, socket)
+
+        socket.on('player/next', () => {
+            if (Player.state === States.PLAYING) {
+                Player.next()
+            }
+        })
     }
 
     broadcastUpdate (type, socket = Sockets.io) {

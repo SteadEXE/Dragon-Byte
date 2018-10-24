@@ -3,7 +3,7 @@
         <div class="card bg-dark text-light shadow-lg">
             <div class="card-header text-center text-uppercase">
                 <span v-if="state === 'idle'">EN ATTENTE</span>
-                <span v-if="state === 'loading'">CHARGEMENT DE LA VIDÉO</span>
+                <span v-if="state === 'loading'">CHARGEMENT</span>
                 <span v-if="state === 'playing'">LECTURE EN COURS</span>
             </div>
             <div class="card-body text-center">
@@ -14,10 +14,13 @@
                     <p class="lead">
                         {{ track.title }}
                     </p>
-                    <div class="text-primary">
+                    <div class="text-primary mb-3">
                         <i class="fas fa-clock mr-2"></i> {{ track.elapsed }} / {{ track.duration }}
                         <i class="fas fa-user-circle mx-2"></i> {{ owner.nickname }}
                     </div>
+                    <button class="btn btn-outline-danger" @click="next">
+                        <i class="fas fa-step-forward"></i> SUIVANT
+                    </button>
                 </div>
                 <div v-else>
                     Il n'y a aucun titre dans la file d'attente.
@@ -38,7 +41,12 @@
             state: state => state.state,
             track: state => state.track,
             owner: state => state.owner
-        })
+        }),
+        methods: {
+            next () {
+                Socket.emit('player/next')
+            }
+        }
     }
 
     Socket.on('player/status', payload => {

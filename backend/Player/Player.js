@@ -86,6 +86,8 @@ class Player extends EventEmitter {
     }
 
     async next () {
+        this.state = States.LOADING
+        this.emit('update', PlayerUpdate.FULL)
         this.window.webContents.send('stop')
     }
 
