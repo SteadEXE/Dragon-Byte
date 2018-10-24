@@ -8,6 +8,7 @@ const Pending = require('../Models/Pending')
 const History = require('../Models/History')
 const Console = require('../Console')
 const PlayerEmitter = require('../Event/Emitter/PlayerEmitter')
+const UserEmitter = require('../Event/Emitter/UserEmitter')
 
 class Player extends EventEmitter {
     constructor () {
@@ -56,6 +57,12 @@ class Player extends EventEmitter {
                 this.status.duration = Math.round(duration)
 
                 PlayerEmitter.emit('update', Updates.UPDATE, this.status)
+            }
+
+            // Perform experience tick every 5000ms.
+            if (Date.now() - this.status.updated >= 5000) {
+                this.status.updated = Date.now()
+                UserEmitter.emit('experience/tick', this.status.current.owner)
             }
         })
 
