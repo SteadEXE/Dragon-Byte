@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const Track = require('../Entity/Track')
 
 const Schema = new mongoose.Schema({
     videoId: String,
@@ -8,5 +9,7 @@ const Schema = new mongoose.Schema({
         default: 0
     }
 })
+
+Schema.loadClass(Track)
 
 module.exports = mongoose.model('Track', Schema)

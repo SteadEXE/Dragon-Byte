@@ -2,58 +2,23 @@ const Sockets = require('../Sockets')
 const Player = require('../../Player/Player')
 const Updates = require('../../Player/Constants/Updates')
 const States = require('../../Player/Constants/States')
+const PlayerStatusPacket = require('../Packet/Player/PlayerStatusPacket')
 
 class PlayerHandler {
-    constructor () {
-        // Everytime player is updated, broadcast changes to clients.
-        Player.on('update', (type) => {
-            this.broadcastUpdate(type)
-        })
-    }
-
     handle (socket) {
-        this.broadcastUpdate(Updates.FULL, socket)
+        this.broadcastUpdate(socket)
 
         socket.on('player/next', () => {
-            if (Player.state === States.PLAYING) {
+            if (Player.status.state === States.PLAYING) {
                 Player.next()
             }
         })
     }
 
-    broadcastUpdate (type, socket = Sockets.io) {
-        let packet = { }
+    broadcastUpdate (socket) {
+        let packet = new PlayerStatusPacket(Updates.FULL, Player.status)
 
-        switch (type) {
-            case Updates.FULL:
-                packet.state = Player.state
-
-                if (Player.current) {
-                    packet.track = {
-                        title: Player.current.track.title,
-                        duration: Player.duration,
-                        elapsed: Player.elapsed
-                    }
-
-                    packet.owner = {
-                        nickname: Player.current.owner.username,
-                        experience: Player.current.owner.experience
-                    }
-                }
-                break
-            case Updates.STATE:
-                packet.state = Player.state
-                break
-            case Updates.UPDATE:
-                packet.track = {
-                    title: Player.current.track.title,
-                    duration: Player.duration,
-                    elapsed: Player.elapsed
-                }
-                break
-        }
-
-        socket.emit('player/status', packet)
+        socket.emit(packet.name(), packet.payload())
     }
 }
 

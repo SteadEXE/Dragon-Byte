@@ -1,25 +1,21 @@
 const { BrowserWindow, ipcMain } = require('electron')
 const EventEmitter = require('events').EventEmitter
 const States = require('./Constants/States')
-const PlayerUpdate = require('./Constants/Updates')
+const Updates = require('./Constants/Updates')
 const PlayerFirewall = require('./PlayerFirewall')
+const PlayerStatus = require('./PlayerStatus')
 const Pending = require('../Models/Pending')
 const History = require('../Models/History')
 const Console = require('../Console')
+const PlayerEmitter = require('../Event/Emitter/PlayerEmitter')
 
 class Player extends EventEmitter {
     constructor () {
         super()
 
         this.window = null
-        this.state = States.INITITIALIZING
-
-        this.duration = 0
-        this.elapsed = 0
-
-        this.updated = 0
-
-        this.current = null
+        this.status = new PlayerStatus()
+        this.status.state = States.INITITIALIZING
     }
 
     init () {
@@ -32,7 +28,7 @@ class Player extends EventEmitter {
             PlayerFirewall.filter(this.window)
 
             this.window.webContents.on('dom-ready', () => {
-                this.state = States.IDLE
+                this.status.state = States.IDLE
                 this.play()
             })
 
@@ -40,59 +36,52 @@ class Player extends EventEmitter {
         }
 
         ipcMain.on('play', () => {
-            this.state = States.PLAYING
+            this.status.state = States.PLAYING
 
-            this.emit('update', PlayerUpdate.FULL)
+            PlayerEmitter.emit('update', Updates.FULL, this.status)
 
-            Console.positive(`Now playing ${this.current.track.title}.`, '  PLAYER  ')
+            Console.positive(`Now playing ${this.status.current.track.title}.`, '  PLAYER  ')
         })
 
         ipcMain.on('update', async (event, elapsed, duration) => {
             elapsed = Math.round(elapsed)
             duration = Math.round(duration)
 
-            if (this.updated === 0) {
-                this.updated = Date.now()
+            if (this.status.updated === 0) {
+                this.status.updated = Date.now()
             }
 
-            if (elapsed != this.elapsed || duration != this.duration) {
-                this.elapsed = Math.round(elapsed)
-                this.duration = Math.round(duration)
+            if (elapsed != this.status.elapsed || duration != this.status.duration) {
+                this.status.elapsed = Math.round(elapsed)
+                this.status.duration = Math.round(duration)
 
-                this.emit('update', PlayerUpdate.UPDATE)
-                this.emit('progress')
+                PlayerEmitter.emit('update', Updates.UPDATE, this.status)
             }
         })
 
         ipcMain.on('ended', (event, blocked) => {
-            Console.positive(`Now cleaning ${this.current.track.title}.`, '  PLAYER  ')
+            this.status = new PlayerStatus()
 
-            this.state = States.IDLE
-            this.current = null
-            this.duration = 0
-            this.elapsed = 0
-            this.updated = 0
-
-            this.emit('update', PlayerUpdate.STATE)
+            PlayerEmitter.emit('update', Updates.STATE, this.status)
             this.play()
         })
 
         ipcMain.on('load', () => {
-            this.state = States.LOADING
-            this.emit('update', PlayerUpdate.FULL)
+            this.status.state = States.LOADING
+            PlayerEmitter.emit('update', Updates.FULL, this.status)
 
-            Console.positive(`Now loading ${this.current.track.title}.`, '  PLAYER  ')
+            Console.positive(`Now loading ${this.status.current.track.title}.`, '  PLAYER  ')
         })
     }
 
     async next () {
-        this.state = States.LOADING
-        this.emit('update', PlayerUpdate.FULL)
+        this.status.state = States.LOADING
+        PlayerEmitter.emit('update', Updates.FULL, this.status)
         this.window.webContents.send('stop')
     }
 
     async play () {
-        if (this.state !== States.IDLE) {
+        if (!this.ready()) {
             return
         }
 
@@ -105,8 +94,8 @@ class Player extends EventEmitter {
             return
         }
 
-        this.state = States.LOADING
-        this.current = pending
+        this.status.state = States.LOADING
+        this.status.current = pending
 
         // Increase played time
         pending.track.played++
@@ -125,6 +114,10 @@ class Player extends EventEmitter {
         this.window.webContents.send('play', url)
 
         this.emit('play')
+    }
+
+    ready () {
+        return this.status.state === States.IDLE
     }
 }
 

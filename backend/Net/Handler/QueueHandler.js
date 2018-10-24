@@ -73,7 +73,7 @@ class QueueHandler {
 
                     await pending.save()
 
-                    if (Player.state === States.IDLE) {
+                    if (Player.ready()) {
                         Player.play()
                     } else {
                         this.broadcastQueue()

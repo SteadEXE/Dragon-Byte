@@ -4,6 +4,10 @@ const Console = require('./Console')
 const Player = require('./Player/Player')
 const HTTP = require('./Net/HTTP')
 
+// Load listeners.
+require('./Event/Listener/UserListener')
+require('./Event/Listener/PlayerListener')
+
 // Allow autoplay of videos.
 app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required')
 

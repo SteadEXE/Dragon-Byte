@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const User = require('../Entity/User')
 
 const Schema = mongoose.Schema({
     username: String,
@@ -18,5 +19,7 @@ const Schema = mongoose.Schema({
     latitude: Number,
     longitude: Number
 })
+
+Schema.loadClass(User)
 
 module.exports = mongoose.model('User', Schema)

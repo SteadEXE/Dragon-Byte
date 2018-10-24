@@ -2,6 +2,8 @@ const crypto = require('crypto')
 const Sockets = require('../Sockets')
 const User = require('../../Models/User')
 const Player = require('../../Player/Player')
+const OnlinePacket = require('../Packet/Users/OnlineUsersPacket')
+const AccountUpdatePacket = require('../Packet/Account/AccountUpdatePacket')
 
 class UserHandler {
     constructor () {
@@ -27,11 +29,9 @@ class UserHandler {
     }
     async handle (socket) {
         const user = await User.findOne({ token: socket.token })
+        const packet = new AccountUpdatePacket(user)
         
-        socket.emit('account/update', {
-            nickname: user.username,
-            experience: user.experience
-        })
+        socket.emit(packet.name(), packet.payload())
 
         socket.on('disconnect', async () => {
             let room = Sockets.io.nsps['/'].adapter.rooms[socket.token]
@@ -48,15 +48,9 @@ class UserHandler {
 
     async broadcastOnline () {
         let users = await User.find({ session: Sockets.session })
+        let packet = new OnlinePacket(users)
 
-        users = users.map(user => {
-            return {
-                nickname: user.username,
-                experience: user.experience
-            }
-        })
-
-        Sockets.io.emit('users/online', users)
+        Sockets.io.emit(packet.name(), packet.payload())
     }
 }
 
