@@ -120,7 +120,7 @@ class Player extends EventEmitter {
 
         this.window.webContents.send('play', url)
 
-        this.emit('play')
+        PlayerEmitter.emit('play')
     }
 
     ready () {

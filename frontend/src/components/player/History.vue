@@ -21,7 +21,7 @@
         })
     }
 
-    Socket.on('history/tracks', tracks => {
+    Socket.on('history/all', tracks => {
         Store.dispatch('SET_TRACKS', tracks)
     })
 </script>
