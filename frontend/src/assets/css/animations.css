@@ -1,0 +1,12 @@
+.flashing {
+    animation: flashing .8s ease infinite alternate-reverse;
+}
+
+@keyframes flashing {
+    0% {
+        opacity: 1
+    }
+    100% {
+        opacity: .5;
+    }
+}

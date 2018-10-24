@@ -7,7 +7,7 @@
       </div>
       <!-- Utilisateur non connecté. -->
       <div v-else>
-        <error-message></error-message>
+        <error-message class="flashing"></error-message>
       </div>
     </div>
     <!-- Pas de connexion au serveur -->
@@ -20,6 +20,7 @@
 <script>
   import bootstrap from '@/assets/css/bootstrap.min.css'
   import fontawesome from '@/assets/css/fontawesome.min.css'
+  import animations from '@/assets/css/animations.css'
   import roboto from '@/assets/webfonts/roboto/roboto.css'
   
   import { mapState } from 'vuex'
