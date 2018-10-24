@@ -58,6 +58,15 @@ class Player extends EventEmitter {
 
                 this.emit('update', PlayerUpdate.UPDATE)
             }
+
+            // Give experience to owner
+            if (this.updated === 0) {
+                this.updated = Date.now()
+            }
+
+            let experience = Math.round((Date.now() - this.updated) / 1000)
+
+
         })
 
         ipcMain.on('ended', (event, blocked) => {
@@ -67,6 +76,7 @@ class Player extends EventEmitter {
             this.current = null
             this.duration = 0
             this.elapsed = 0
+            this.updated = 0
 
             this.emit('update', PlayerUpdate.STATE)
             this.play()
@@ -92,7 +102,7 @@ class Player extends EventEmitter {
         let pending = await Pending.findOneAndDelete({})
                                 .populate('track')
                                 .populate('owner')
-                                .sort({ _id: '-1' })
+                                .sort({ _id: '1' })
 
         if (pending === null) {
             return
