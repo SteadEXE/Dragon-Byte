@@ -17,8 +17,6 @@ class HistoryListener {
 
         let packet = new HistoryPacket(tracks)
 
-        console.log(packet.payload())
-
         socket.emit(packet.name(), packet.payload())
     }
 }
