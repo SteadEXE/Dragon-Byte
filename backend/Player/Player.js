@@ -121,13 +121,12 @@ class Player extends EventEmitter {
         // Generate video from 
         let url = `https://www.youtube.com/watch?v=${pending.track.videoId}`
 
-        this.window.webContents.send('play', url)
-
-        PlayerEmitter.emit('play')
-
         this.antilock = setTimeout(() => {
             this.next()
         }, 5 * 1000)
+
+        this.window.webContents.send('play', url)
+        PlayerEmitter.emit('play')
     }
 
     ready () {
