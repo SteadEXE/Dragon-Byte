@@ -1,5 +1,6 @@
 const PlayerEmitter = require('../Emitter/PlayerEmitter')
 const HistoryEmitter = require('../Emitter/HistoryEmitter')
+const QueueEmitter = require('../Emitter/QueueEmitter')
 const PlayerStatusPacket = require('../../Net/Packet/Player/PlayerStatusPacket')
 const Sockets = require('../../Net/Sockets')
 
@@ -17,6 +18,7 @@ class PlayerListener {
 
     onPlayerPlay () {
         HistoryEmitter.emit('history/all')
+        QueueEmitter.emit('queue/all')
     }
 }
 

@@ -7,11 +7,11 @@ const Pending = require('../../Models/Pending')
 const Console = require('../../Console')
 const Sockets = require('../Sockets')
 const Player = require('../../Player/Player')
-const PlayerEmitter = require('../../Event/Emitter/PlayerEmitter')
+const QueueEmitter = require('../../Event/Emitter/QueueEmitter')
 
 class QueueHandler {
     handle (socket) {
-        PlayerEmitter.emit('queue/all', socket)
+        QueueEmitter.emit('queue/all', socket)
 
         socket.on('queue/push', async (link) => {
             // Check that socket is signed-in.
@@ -70,7 +70,7 @@ class QueueHandler {
                     if (Player.ready()) {
                         Player.play()
                     } else {
-                        this.broadcastQueue()
+                        QueueEmitter.emit('queue/all')
                     }
                 })
             })
