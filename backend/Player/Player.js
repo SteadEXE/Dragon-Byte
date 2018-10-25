@@ -17,6 +17,8 @@ class Player extends EventEmitter {
         this.window = null
         this.status = new PlayerStatus()
         this.status.state = States.INITITIALIZING
+
+        this.antilock = null
     }
 
     init () {
@@ -37,6 +39,7 @@ class Player extends EventEmitter {
         }
 
         ipcMain.on('play', () => {
+            clearTimeout(this.antilock)
             this.status.state = States.PLAYING
 
             PlayerEmitter.emit('update', Updates.FULL, this.status)
@@ -121,6 +124,10 @@ class Player extends EventEmitter {
         this.window.webContents.send('play', url)
 
         PlayerEmitter.emit('play')
+
+        this.antilock = setTimeout(() => {
+            this.next()
+        }, 5 * 1000)
     }
 
     ready () {
