@@ -116,7 +116,7 @@ class Player extends EventEmitter {
         await history.save()
 
         // Generate video from 
-        let url = `https://www.youtube.com/watch?v=${pending.track.videoId}`
+        let url = `https://www.youtube.com/embed/${pending.track.videoId}?autoplay=1`
 
         this.window.webContents.send('play', url)
 
