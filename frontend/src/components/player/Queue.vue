@@ -55,7 +55,7 @@
         }
     }
 
-    Socket.on('queue/tracks', pendings => {
+    Socket.on('queue/all', pendings => {
         Store.dispatch('SET_PENDINGS', pendings)
     })
 </script>

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const Pending = require('../Entity/Pending')
 
 const Schema = new mongoose.Schema({
     track: {
@@ -10,5 +11,7 @@ const Schema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId
     }
 })
+
+Schema.loadClass(Pending)
 
 module.exports = mongoose.model('Pending', Schema)

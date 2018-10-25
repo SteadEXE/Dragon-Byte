@@ -7,17 +7,11 @@ const Pending = require('../../Models/Pending')
 const Console = require('../../Console')
 const Sockets = require('../Sockets')
 const Player = require('../../Player/Player')
-const States = require('../../Player/Constants/States')
+const PlayerEmitter = require('../../Event/Emitter/PlayerEmitter')
 
 class QueueHandler {
-    constructor () {
-        Player.on('play', () => {
-            this.broadcastQueue()
-        })
-    }
-
     handle (socket) {
-        this.broadcastQueue(socket)
+        PlayerEmitter.emit('queue/all', socket)
 
         socket.on('queue/push', async (link) => {
             // Check that socket is signed-in.
@@ -85,27 +79,6 @@ class QueueHandler {
                 Console.error(`Unable to request ${payload}`)
             })
         })
-    }
-
-    async broadcastQueue (socket = Sockets.io) {
-        let pendings = await Pending.find({})
-            .populate('track')
-            .populate('owner')
-        
-        pendings = pendings.map(({ track, owner }) => {
-            return {
-                track: {
-                    title: track.title,
-                    played: track.played
-                },
-                owner: {
-                    nickname: owner.username,
-                    experience: owner.experience
-                }
-            }
-        })
-
-        socket.emit('queue/tracks', pendings)
     }
 }
 

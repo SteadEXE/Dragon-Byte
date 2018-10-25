@@ -8,6 +8,7 @@ const HTTP = require('./Net/HTTP')
 require('./Event/Listener/UserListener')
 require('./Event/Listener/PlayerListener')
 require('./Event/Listener/HistoryListener')
+require('./Event/Listener/QueueListener')
 
 // Allow autoplay of videos.
 app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required')
