@@ -63,11 +63,15 @@
             // IFrame is loaded, remove the listener.
             Protoxyde.Browser.removeEventListener('load', Protoxyde.OnIFrameLoad)
             // Check if video is available
+            console.log(Protoxyde.Player)
             if (!Protoxyde.Player) {
                 ipcRenderer.send('ended', true) // true, means video blocked.
                 Protoxyde.Browser.src = ''
                 return
             }
+
+            console.log(Protoxyde.Player.currentSrc)
+
             // Inject some code to youtube :>
             Protoxyde.Player.addEventListener('timeupdate', Protoxyde.OnUpdate)
             Protoxyde.Player.addEventListener('timeupdate', Protoxyde.OnPlay, { once: true })
