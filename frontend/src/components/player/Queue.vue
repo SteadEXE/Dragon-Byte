@@ -8,7 +8,7 @@
                         <input type="text" class="form-control bg-dark text-primary border-primary border-right-0" placeholder="Lien de la vidéo" v-model="url">
                         <div class="input-group-append">
                             <button class="btn btn-outline-primary">
-                                <i class="fas fa-cloud-upload"></i>
+                                <i class="fas fa-chevron-circle-up"></i>
                             </button>
                         </div>
                     </div>
