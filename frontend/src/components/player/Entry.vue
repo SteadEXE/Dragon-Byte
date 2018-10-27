@@ -17,4 +17,7 @@
 </script>
 
 <style>
+    .entry {
+        font-size: 14px;
+    }
 </style>
