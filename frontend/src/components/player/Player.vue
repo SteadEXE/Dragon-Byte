@@ -15,7 +15,7 @@
                         {{ track.title }}
                     </p>
                     <div class="text-primary mb-3">
-                        <i class="fas fa-clock mr-2"></i> {{ track.elapsed }} / {{ track.duration }}
+                        <i class="fas fa-clock mr-2"></i> {{ track.elapsed | time }} / {{ track.duration | time }}
                         <i class="fas fa-user-circle mx-2"></i> {{ owner.nickname }}
                     </div>
                     <button class="btn btn-outline-danger" @click="next">
@@ -45,6 +45,26 @@
         methods: {
             next () {
                 Socket.emit('player/next')
+            }
+        },
+        filters: {
+            time (value) {
+                let hours = Math.floor(value / 3600)
+                value %= 3600
+                let minutes = Math.floor(value / 60)
+                value %= 60
+                let seconds = value
+
+                let output = ''
+
+                if (hours > 0) {
+                    output += ('00' + hours).slice(-2) + ':'
+                }
+
+                output += ('00' + minutes).slice(-2) + ':'
+                output += ('00' + seconds).slice(-2)
+
+                return output
             }
         }
     }
