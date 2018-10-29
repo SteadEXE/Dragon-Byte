@@ -1,7 +1,7 @@
 import Client from 'socket.io-client'
 import Store from '@/store'
 
-const Socket = Client(`ws://${window.location.host}`, { 
+const Socket = Client(`${window.location.protocol}//${window.location.host}`, { 
     autoConnect: false
 })
 
