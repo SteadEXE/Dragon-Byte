@@ -9,6 +9,7 @@ export default new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [
-    { path: '/', component: Player }
+    { path: '/', component: Player },
+    { path: '/account', component: () => import('@/views/Account') }
   ]
 })

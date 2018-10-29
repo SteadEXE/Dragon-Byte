@@ -97,10 +97,6 @@
 </script>
 
 <style>
-    .alert {
-        font-size: 12px; 
-    }
-
     .loader {
         font-size: 64px;
     }
