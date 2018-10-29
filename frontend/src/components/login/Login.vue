@@ -65,7 +65,7 @@
                 this.busy = true
                 this.message = ''
 
-                let response = await axios.post(`http://${window.location.host}/api/auth`, {
+                let response = await axios.post(`/api/auth`, {
                     username: this.username,
                     password: this.password
                 })

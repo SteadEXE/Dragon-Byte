@@ -71,7 +71,7 @@
                 this.errorMessage = ''
                 this.successMessage = ''
 
-                let response = await axios.post(`http://${window.location.host}/api/register`, {
+                let response = await axios.post(`/api/register`, {
                     username: this.username,
                     password: this.password,
                     email: this.email
