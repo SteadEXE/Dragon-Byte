@@ -13,6 +13,7 @@
                     <div class="alert alert-success" v-if="successMessage">
                         <i class="fas fa-check-circle mr-2"></i> {{ successMessage }}
                     </div>
+
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text">
@@ -21,6 +22,7 @@
                         </div>
                         <input type="text" class="form-control" placeholder="Surnom" v-model="nickname">
                     </div>
+                    
                     <div class="text-center">
                         <button class="btn btn-outline-primary">Confirmer</button>
                     </div>

@@ -12,6 +12,13 @@ class UserHandler {
         
         socket.emit(packet.name(), packet.payload())
 
+        socket.on('account/position', async (latitude, longitude) => {
+            await User.findOneAndUpdate({ token: socket.token }, {
+                latitude: latitude,
+                longitude: longitude
+            })
+        })
+
         socket.on('disconnect', async () => {
             let room = Sockets.io.nsps['/'].adapter.rooms[socket.token]
 

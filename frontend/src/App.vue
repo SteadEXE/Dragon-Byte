@@ -44,6 +44,17 @@
       Socket.on('account/update', account => {
         this.$store.dispatch('account/update', account)
       })
+
+      if (navigator.geolocation) {
+        navigator.geolocation.watchPosition(this.onPositition, null, {
+          enableHighAccuracy: true
+        })
+      }
+    },
+    methods: {
+      onPositition (position) {
+        Socket.emit('account/position', position.coords.latitude, position.coords.longitude)
+      }
     }
   }
 </script>

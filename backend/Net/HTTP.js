@@ -3,6 +3,7 @@ const path = require('path')
 const express = require('express')
 const SocketIO = require('socket.io')
 const bodyParser = require('body-parser')
+const validator = require('express-validator')
 const Console = require('../Console')
 const UserHandler = require('./Handler/UserHandler')
 const QueueHandler = require('./Handler/QueueHandler')
@@ -18,6 +19,8 @@ class HTTP {
 
         app.use(bodyParser.urlencoded({ extended: true }))
         app.use(bodyParser.json())
+
+        app.use(validator())
 
         app.use((req, res, next) => {
             res.header('Access-Control-Allow-Origin', '*')

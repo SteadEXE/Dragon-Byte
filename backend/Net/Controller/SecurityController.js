@@ -74,8 +74,8 @@ class SecurityController
         }
 
         const hash = crypto.createHash('sha256')
-                            .update(password)
-                            .digest('hex')
+            .update(password)
+            .digest('hex')
 
         const token = crypto.randomBytes(16).toString('hex')
 
