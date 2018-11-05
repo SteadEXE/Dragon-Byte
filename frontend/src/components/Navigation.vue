@@ -1,5 +1,8 @@
 <template>
     <nav class="navbar navbar-dark bg-primary fixed-bottom navbar-expand-lg">
+        <router-link class="btn btn-outline-light my-2 my-sm-0 mr-2" :to="{ name: 'home' }">
+            <i class="fas fa-home"></i>
+        </router-link>
         <div class="text-center navbar-text text-font-bold mx-auto">
             <div v-if="account">
                 <i class="fas fa-user-circle"></i> {{ account.nickname }}
@@ -15,7 +18,10 @@
 
             {{ ping }} ms
         </div>
-        <button class="btn btn-outline-light my-2 my-sm-0" @click="logout">
+        <router-link class="btn btn-outline-light my-2 my-sm-0 mr-2" :to="{ name: 'account' }">
+            <i class="fas fa-cog"></i>
+        </router-link>
+        <button class="btn btn-danger my-2 my-sm-0" @click="logout">
             <i class="fas fa-sign-out"></i>
         </button>
     </nav>

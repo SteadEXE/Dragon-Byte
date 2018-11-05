@@ -5,3 +5,13 @@ backend/node_modules/
 \.vs/
 
 frontend/package-lock\.json
+
+\.idea/
+
+backend/package-lock\.json
+
+client/node_modules/
+
+node_modules/
+
+package-lock\.json
