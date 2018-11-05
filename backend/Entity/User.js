@@ -2,7 +2,7 @@ class User {
     export () {
         return {
             username: this.username,
-            nickname: this.username,
+            nickname: this.nickname,
             experience: this.experience,
             points: this.points
         }
