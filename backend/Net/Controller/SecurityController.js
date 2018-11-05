@@ -81,6 +81,7 @@ class SecurityController
 
         await User.create({
             username: username,
+            nickname: username,
             email: email,
             password: hash,
             token: token
