@@ -10,12 +10,14 @@
         data () {
             return {
                 map: null,
-                tileLayer: null
+                tileLayer: null,
+                users: { }
             }
         },
         mounted () {
             this.initMap()
             this.initLayer()
+            this.loadUsers()
         },
         methods: {
             initMap () {
@@ -28,6 +30,15 @@
                 })
 
                 this.tileLayer.addTo(this.map)
+            },
+            loadUsers () {
+                let marker = L.icon({
+                    iconUrl: require('@/assets/svg/user.svg'),
+                    iconSize: [ 16, 16 ]
+                })
+
+                // this.users['stead'] = L.marker([ 48.0, 7.0 ], { icon: marker })
+                // this.users['stead'].addTo(this.map)
             }
         }
     }

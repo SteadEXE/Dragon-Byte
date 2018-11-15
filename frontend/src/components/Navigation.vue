@@ -6,7 +6,7 @@
         <div class="text-center navbar-text text-font-bold mx-auto">
             <div v-if="account">
                 <i class="fas fa-user-circle"></i> {{ account.nickname }}
-                <i class="fas fa-star"></i> {{ account.experience }} XP
+                <i class="fas fa-star"></i> {{ account.experience.toLocaleString('fr-FR') }} XP
             </div>
         </div>
         <router-link class="btn btn-outline-light my-2 my-sm-0 mr-2" :to="{ name: 'account' }">

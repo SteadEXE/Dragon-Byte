@@ -8,7 +8,6 @@
 </template>
 
 <script>
-    import axios from 'axios'
     import Nickname from '@/components/account/Nickname'
     import Password from '@/components/account/Password'
 
@@ -16,15 +15,6 @@
         components: {
             nickname: Nickname,
             password: Password
-        },
-        data () {
-            return {
-                nickname: '',
-                busy: true
-            }
-        },
-        beforeMount () {
-
         }
     }
 </script>
