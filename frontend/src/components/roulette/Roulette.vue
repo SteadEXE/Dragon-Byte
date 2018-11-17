@@ -1,5 +1,5 @@
 <template>
-    <canvas id="roulette"></canvas>
+    <canvas id="roulette" width="1500px" height="400px"></canvas>
 </template>
 
 <script>
@@ -44,45 +44,100 @@
     ]
 
     const COLORS = {
-        red: '#ff0000',
-        black: '#000000',
-        green: '#00ff00'
+        red: '#e74c3c',
+        black: '#222222',
+        green: '#2ecc71'
     }
 
     const SLOT_WIDHT = 100
     const SLOT_HEIGHT = 100
 
+    let scene = null
+    let camera = null
+    let renderer = null
+
     export default {
         data () {
             return {
+                ctx: null,
                 canvas: null,
-                ctx: null
+                offset: 0
             }
         },
         mounted () {
-            this.canvas = document.querySelector('#roulette')
-            this.ctx = this.canvas.getContext('2d')
-            this.render()
+            this.init()
         },
         methods: {
-            render () {
-                // Ensure that canvas size matches the real size.
-                this.canvas.width = this.canvas.clientWidth
-                this.canvas.height = this.canvas.clientHeight
+            init () {
+                this.canvas = document.querySelector('#roulette')
+                this.ctx = this.canvas.getContext('2d')
+
+                this.draw()
+            },
+            draw () {
+                // Clean canvas
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+
+                // Draw roulette.
+                let arc = (2 * Math.PI) / SLOTS.length
+                let radius = 1000
+
+                let centerWheelX = this.canvas.width / 2
+                let centerWheelY = this.canvas.height + radius - 200
 
                 for (let i = 0; i < SLOTS.length; i++) {
+                    let angle = (arc * i) + this.offset
+
+                    this.ctx.beginPath()
                     this.ctx.fillStyle = COLORS[SLOTS[i].color]
-                    this.ctx.fillRect(i * SLOT_WIDHT, 0, SLOT_WIDHT, SLOT_HEIGHT)
+                    this.ctx.arc(centerWheelX, centerWheelY, radius, angle, angle + arc, false)
+                    this.ctx.arc(centerWheelX, centerWheelY, radius - 100, angle + arc, angle, true)
+                    this.ctx.fill()
+                    this.ctx.stroke()
                 }
+
+                for (let i = 0; i < SLOTS.length; i++) {
+                    this.ctx.save()
+                    let angle = (arc * i) + this.offset - (arc / 2)
+                    let x = (radius - 60) * Math.cos(arc * i + this.offset - (arc / 2) + arc)
+                    let y = (radius - 60) * Math.sin(arc * i + this.offset - (arc / 2) + arc)
+                    this.ctx.translate(centerWheelX + x, centerWheelY + y)
+                    this.ctx.rotate(angle + Math.PI / 2 + arc)
+                    this.ctx.textAlign = 'center'
+                    this.ctx.fillStyle = '#ffffff'
+                    this.ctx.font = '32px Arial'
+                    this.ctx.fillText(SLOTS[i].value, 0, 0)
+                    this.ctx.restore()
+                }
+
+                this.ctx.save()
+
+                // Draw triangle
+                this.ctx.beginPath()
+                this.ctx.moveTo(this.canvas.width / 2 - 10, this.canvas.height - 210)
+                this.ctx.lineTo(this.canvas.width / 2 + 10, this.canvas.height - 210)
+                this.ctx.lineTo(this.canvas.width / 2, this.canvas.height - 190)
+                this.ctx.lineTo(this.canvas.width / 2 - 10, this.canvas.height - 210)
+                this.ctx.fillStyle = "#8e44ad"
+                this.ctx.fill()
+                this.ctx.stroke()
+
+                this.ctx.restore()
+
+                this.offset += Math.PI / 360
+
+                requestAnimationFrame(this.draw)
+            },
+            easeOutQuad (t) {
+                return t * (2 - t)
             }
         }
     }
 </script>
 
 <style>
-    #roulette {
+    .slot {
         width: 100%;
-        height: 400px;
-        background: white;
+        height: 100%;
     }
 </style>
