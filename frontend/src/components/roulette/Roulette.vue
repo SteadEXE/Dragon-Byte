@@ -1,8 +1,13 @@
 <template>
-    <canvas id="roulette" width="1500px" height="400px"></canvas>
+    <canvas id="roulette" width="1500px" height="250px"></canvas>
 </template>
 
 <script>
+    import '@/assets/webfonts/roboto/roboto.css'
+    import { mapState } from 'vuex'
+    import Socket from '@/Socket'
+    import Store from '@/stores/RouletteStore'
+
     const SLOTS = [
         { value: 0, color: 'green' },
         { value: 32, color: 'red' },
@@ -49,23 +54,26 @@
         green: '#2ecc71'
     }
 
-    const SLOT_WIDHT = 100
-    const SLOT_HEIGHT = 100
-
-    let scene = null
-    let camera = null
-    let renderer = null
-
     export default {
+        store: Store,
         data () {
             return {
                 ctx: null,
-                canvas: null,
-                offset: 0
+                canvas: null
             }
         },
+        computed: mapState({
+            offset: state => state.offset,
+            end: state => state.end,
+            status: state => state.status
+        }),
         mounted () {
             this.init()
+
+            Socket.emit('roulette/join')
+        },
+        destroyed () {
+            Socket.emit('roulette/leave')
         },
         methods: {
             init () {
@@ -80,13 +88,20 @@
 
                 // Draw roulette.
                 let arc = (2 * Math.PI) / SLOTS.length
-                let radius = 1000
+                let radius = 1e3
 
                 let centerWheelX = this.canvas.width / 2
                 let centerWheelY = this.canvas.height + radius - 200
 
+                let offset = this.offset
+
+                if (Date.now() < this.end && this.status === 'spinning') {
+                    let remaining = 1 - (this.end - Date.now()) / 15e3
+                    offset = this.offset * this.easeOutQuad(remaining)
+                }
+
                 for (let i = 0; i < SLOTS.length; i++) {
-                    let angle = (arc * i) + this.offset
+                    let angle = (arc * i) + offset
 
                     this.ctx.beginPath()
                     this.ctx.fillStyle = COLORS[SLOTS[i].color]
@@ -98,9 +113,9 @@
 
                 for (let i = 0; i < SLOTS.length; i++) {
                     this.ctx.save()
-                    let angle = (arc * i) + this.offset - (arc / 2)
-                    let x = (radius - 60) * Math.cos(arc * i + this.offset - (arc / 2) + arc)
-                    let y = (radius - 60) * Math.sin(arc * i + this.offset - (arc / 2) + arc)
+                    let angle = (arc * i) + offset - (arc / 2)
+                    let x = (radius - 60) * Math.cos(arc * i + offset - (arc / 2) + arc)
+                    let y = (radius - 60) * Math.sin(arc * i + offset - (arc / 2) + arc)
                     this.ctx.translate(centerWheelX + x, centerWheelY + y)
                     this.ctx.rotate(angle + Math.PI / 2 + arc)
                     this.ctx.textAlign = 'center'
@@ -124,7 +139,19 @@
 
                 this.ctx.restore()
 
-                this.offset += Math.PI / 360
+                // Draw time remaining
+                if (this.status === 'bet') {
+                    let remaining = Math.abs(Date.now() - this.end) / 1000
+
+                    this.ctx.save()
+                    this.ctx.textAlign = 'center'
+                    this.ctx.font = 'lighter 16px roboto'
+                    this.ctx.fillStyle = '#ffffff'
+                    this.ctx.fillText('Prochain tirage dans', this.canvas.width / 2, this.canvas.height - 60)
+                    this.ctx.font = 'lighter 48px roboto'
+                    this.ctx.fillText(remaining.toFixed(1) + '"', this.canvas.width / 2, this.canvas.height - 10)
+                    this.ctx.restore()
+                }
 
                 requestAnimationFrame(this.draw)
             },
@@ -133,6 +160,13 @@
             }
         }
     }
+
+    Socket.on('roulette/status', state => {
+        console.log('Received state')
+        Store.dispatch('updateState', state)
+
+        console.log(state)
+    })
 </script>
 
 <style>

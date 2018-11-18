@@ -9,6 +9,7 @@ const UserHandler = require('./Handler/UserHandler')
 const QueueHandler = require('./Handler/QueueHandler')
 const PlayerHandler = require('./Handler/PlayerHandler')
 const HistoryHandler = require('./Handler/HistoryHandler')
+const RouletteHandler = require('./Handler/Game/RouletteHandler')
 const Sockets = require('./Sockets')
 const Router = require('./Router/Router')
 const User = require('../Models/User')
@@ -70,6 +71,7 @@ class HTTP {
             QueueHandler.handle(socket)
             PlayerHandler.handle(socket)
             HistoryHandler.handle(socket)
+            RouletteHandler.handle(socket)
 
             socket.on('net/ping', () => {
                 socket.emit('net/pong')
