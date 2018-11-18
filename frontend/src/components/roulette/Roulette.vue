@@ -1,5 +1,5 @@
 <template>
-    <canvas id="roulette" width="1500px" height="250px"></canvas>
+    <canvas id="roulette"></canvas>
 </template>
 
 <script>
@@ -68,11 +68,13 @@
             status: state => state.status
         }),
         mounted () {
-            this.init()
-
+            window.addEventListener('resize', this.resizeCanvas)
             Socket.emit('roulette/join')
+
+            this.init()
         },
         destroyed () {
+            window.removeEventListener('resize', this.resizeCanvas)
             Socket.emit('roulette/leave')
         },
         methods: {
@@ -80,6 +82,7 @@
                 this.canvas = document.querySelector('#roulette')
                 this.ctx = this.canvas.getContext('2d')
 
+                this.resizeCanvas()
                 this.draw()
             },
             draw () {
@@ -158,8 +161,12 @@
                 requestAnimationFrame(this.draw)
             },
             easeOutQuad (t) {
-                //return t * (2 - t)
-                return t<.5 ? 2*t*t : -1+(4-2*t)*t
+                return t * (2 - t)
+                //return t<.5 ? 2*t*t : -1+(4-2*t)*t
+            },
+            resizeCanvas () {
+                this.canvas.width = this.canvas.clientWidth
+                this.canvas.height = this.canvas.clientHeight
             }
         }
     }
@@ -173,6 +180,11 @@
 </script>
 
 <style>
+    #roulette {
+        width: 100%;
+        height: 250px;
+    }
+
     .slot {
         width: 100%;
         height: 100%;
