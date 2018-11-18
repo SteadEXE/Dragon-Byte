@@ -100,6 +100,8 @@
                     offset = this.offset * this.easeOutQuad(remaining)
                 }
 
+                offset -= Math.PI / 2
+
                 for (let i = 0; i < SLOTS.length; i++) {
                     let angle = (arc * i) + offset
 
@@ -113,11 +115,11 @@
 
                 for (let i = 0; i < SLOTS.length; i++) {
                     this.ctx.save()
-                    let angle = (arc * i) + offset - (arc / 2)
+                    let angle = (arc * i) + offset - (arc / 2) + Math.PI / 2
                     let x = (radius - 60) * Math.cos(arc * i + offset - (arc / 2) + arc)
                     let y = (radius - 60) * Math.sin(arc * i + offset - (arc / 2) + arc)
                     this.ctx.translate(centerWheelX + x, centerWheelY + y)
-                    this.ctx.rotate(angle + Math.PI / 2 + arc)
+                    this.ctx.rotate(angle + arc)
                     this.ctx.textAlign = 'center'
                     this.ctx.fillStyle = '#ffffff'
                     this.ctx.font = '32px Arial'
@@ -149,14 +151,15 @@
                     this.ctx.fillStyle = '#ffffff'
                     this.ctx.fillText('Prochain tirage dans', this.canvas.width / 2, this.canvas.height - 60)
                     this.ctx.font = 'lighter 48px roboto'
-                    this.ctx.fillText(remaining.toFixed(1) + '"', this.canvas.width / 2, this.canvas.height - 10)
+                    this.ctx.fillText(remaining.toFixed(1) + "'", this.canvas.width / 2, this.canvas.height - 10)
                     this.ctx.restore()
                 }
 
                 requestAnimationFrame(this.draw)
             },
             easeOutQuad (t) {
-                return t * (2 - t)
+                //return t * (2 - t)
+                return t<.5 ? 2*t*t : -1+(4-2*t)*t
             }
         }
     }
