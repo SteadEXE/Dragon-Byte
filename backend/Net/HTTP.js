@@ -23,12 +23,6 @@ class HTTP {
 
         app.use(validator())
 
-        app.use((req, res, next) => {
-            res.header('Access-Control-Allow-Origin', '*')
-            res.header('Access-Control-Allow-Headers', 'Content-Type')
-            next()
-        })
-
         // Static files.
         app.use('/', express.static(path.resolve(__dirname, '../../frontend/dist')))
 
