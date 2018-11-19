@@ -27,7 +27,7 @@
                 </button>
             </div>
             <div class="col-sm-4">
-                <button class="btn btn-green btn-block" @click="deposit('green')">
+                <button class="btn btn-green btn-block text-light" @click="deposit('green')">
                     <i class="fas fa-arrow-circle-down"></i>
                 </button>
             </div>
