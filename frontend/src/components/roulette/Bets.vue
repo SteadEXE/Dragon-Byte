@@ -64,23 +64,11 @@
         background: #e74c3c;
     }
 
-    .border-red {
-        border-color: #e74c3c;
-    }
-
     .bg-black {
         background: #222222;
     }
 
-    .border-black {
-        border-color: #222222;
-    }
-
     .bg-green {
         background: #2ecc71;
-    }
-
-    .border-green {
-        border-color: #2ecc71;
     }
 </style>
