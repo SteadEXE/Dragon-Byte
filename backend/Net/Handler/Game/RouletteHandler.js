@@ -4,6 +4,7 @@ const Roulette = require('../../../Game/Roulette/Roulette')
 const Bet = require('../../../Game/Roulette/Bet')
 const StatusPacket = require('../../Packet/Game/Roulette/RouletteStatusPacket')
 const BetsPacket = require('../../Packet/Game/Roulette/RouletteBetsPacket')
+const AccountUpdatePacket = require('../../Packet/Account/AccountUpdatePacket')
 
 class RouletteHandler {
     handle (socket) {
@@ -32,7 +33,7 @@ class RouletteHandler {
                 $inc: {
                     points: -payload.amount
                 }
-            })
+            }, { new : true })
 
             // User has not enough points.
             if (user === null) {
@@ -52,6 +53,9 @@ class RouletteHandler {
 
             // Broadcast bets.
             let betsPacket = new BetsPacket(Roulette)
+            let accountUpdatePacket = new AccountUpdatePacket(user)
+
+            Sockets.io.to(user.token).emit(accountUpdatePacket.name(), accountUpdatePacket.payload())
             Sockets.io.to('roulette').emit(betsPacket.name(), betsPacket.payload())
         })
 

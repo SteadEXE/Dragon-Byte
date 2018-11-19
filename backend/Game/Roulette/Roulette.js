@@ -3,6 +3,7 @@ const Sockets = require('../../Net/Sockets')
 const Slots = require('./Slots')
 const StatusPacket = require('../../Net/Packet/Game/Roulette/RouletteStatusPacket')
 const BetsPacket = require('../../Net/Packet/Game/Roulette/RouletteBetsPacket')
+const AccountUpdatePacket = require('../../Net/Packet/Account/AccountUpdatePacket')
 
 const States = {
     BET: 'bet',
@@ -67,11 +68,17 @@ class Roulette {
 
                 // Update balance for each users if they gained points.
                 if (this.bets[type][token].gain > 0) {
-                    await User.findOneAndUpdate({
+                    let user = await User.findOneAndUpdate({
                         token: bet.user.token
                     }, {
-                        $inc: {points: bet.gain}
-                    })
+                        $inc: { points: bet.gain + bet.amount }
+                    }, { new: true })
+
+                    if (user !== null) {
+                        let accountUpdatePacket = new AccountUpdatePacket(user)
+
+                        Sockets.io.to(user.token).emit(accountUpdatePacket.name(), accountUpdatePacket.payload())
+                    }
                 }
             }
         }

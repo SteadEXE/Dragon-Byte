@@ -1,6 +1,6 @@
 class AccountUpdatePacket {
     constructor (user) {
-        this.user = user.export()
+        this.user = user
     }
 
     name () {
@@ -8,7 +8,7 @@ class AccountUpdatePacket {
     }
 
     payload () {
-        return this.user
+        return this.user.export()
     }
 }
 
