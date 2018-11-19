@@ -5,8 +5,9 @@
         </router-link>
         <div class="text-center navbar-text text-font-bold mx-auto">
             <div v-if="account">
-                <i class="fas fa-user-circle"></i> {{ account.nickname }}
-                <i class="fas fa-star"></i> {{ account.experience.toLocaleString('fr-FR') }} XP
+                <i class="fas fa-user-circle mr-2"></i> {{ account.nickname }}
+                <i class="fas fa-star mx-2"></i> {{ account.experience.toLocaleString('fr-FR') }} XP
+                <i class="fas fa-coins mx-2"></i> {{ account.points.toLocaleString('fr-FR') }}
             </div>
         </div>
         <router-link class="btn btn-outline-light my-2 my-sm-0 mr-2" :to="{ name: 'account' }">
