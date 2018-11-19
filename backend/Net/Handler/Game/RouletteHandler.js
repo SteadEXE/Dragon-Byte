@@ -1,7 +1,9 @@
+const Sockets = require('../../Sockets')
 const User = require('../../../Models/User')
 const Roulette = require('../../../Game/Roulette/Roulette')
 const Bet = require('../../../Game/Roulette/Bet')
 const StatusPacket = require('../../Packet/Game/Roulette/RouletteStatusPacket')
+const BetsPacket = require('../../Packet/Game/Roulette/RouletteBetsPacket')
 
 class RouletteHandler {
     handle (socket) {
@@ -9,12 +11,39 @@ class RouletteHandler {
             socket.join('roulette')
 
             // Send state of roulette.
-            const packet = new StatusPacket(Roulette)
-            socket.emit(packet.name(), packet.payload())
+            const statusPacket = new StatusPacket(Roulette)
+            const betsPacket = new BetsPacket(Roulette)
+
+            socket.emit(statusPacket.name(), statusPacket.payload())
+            socket.emit(betsPacket.name(), betsPacket.payload())
         })
 
         socket.on('roulette/deposit', async payload => {
-            let user = await User.findOne({ token: socket.token })
+            // Find a user and update its balance.
+            let user = await User.findOneAndUpdate({
+                token: socket.token,
+                points: { $gt: -1 }
+            }, {
+                $inc: {
+                    // points: -payload.amount
+                    points: 0
+                }
+            })
+
+            // Create a bet or update one if already exists.
+            let bet = Roulette.bets[payload.type][socket.token]
+
+            if (bet !== undefined) {
+                bet.amount += parseInt(payload.amount, 10)
+            } else {
+                bet = new Bet(user, payload.type, parseInt(payload.amount, 10))
+            }
+
+            Roulette.bets[payload.type][socket.token] = bet
+
+            // Broadcast bets.
+            let betsPacket = new BetsPacket(Roulette)
+            Sockets.io.to('roulette').emit(betsPacket.name(), betsPacket.payload())
         })
 
         socket.on('roulette/leave', () => {

@@ -14,7 +14,11 @@ class Roulette {
         this.end = Date.now()
         this.offset = 0
 
-        this.bets = { }
+        this.bets = {
+            black: { },
+            red: { },
+            green: { }
+        }
 
         setTimeout(this.spin.bind(this), 15 * 1000)
     }
