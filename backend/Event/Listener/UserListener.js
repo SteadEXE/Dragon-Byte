@@ -25,10 +25,10 @@ class UserListener {
         }
 
         // Update user and broadcast it.
-        await User.findOneAndUpdate({ token: user.token }, { $inc: {
+        user = await User.findOneAndUpdate({ token: user.token }, { $inc: {
             experience: amount,
             points: amount
-        } })
+        } }, { new: true })
 
         let accountPacket = new AccountUpdatePacket(user)
 
