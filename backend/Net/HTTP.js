@@ -32,7 +32,6 @@ class HTTP {
         // Fallback to client.
         app.use('*', (req, res) => {
             res.sendFile(path.resolve(__dirname, '../../frontend/dist/index.html'))
-            res.end()
         })
 
         const server = http.createServer(app)
