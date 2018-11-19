@@ -172,10 +172,7 @@
     }
 
     Socket.on('roulette/status', state => {
-        console.log('Received state')
         Store.dispatch('updateState', state)
-
-        console.log(state)
     })
 </script>
 

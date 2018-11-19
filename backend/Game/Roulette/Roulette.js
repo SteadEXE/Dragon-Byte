@@ -61,7 +61,7 @@ class Roulette {
                         multiplier = 16
                     }
 
-                    this.bets[type][token].gain = (bet.amount * multiplier) - bet.amount
+                    this.bets[type][token].gain = bet.amount * multiplier
                 } else {
                     this.bets[type][token].gain = -bet.amount
                 }
@@ -71,7 +71,7 @@ class Roulette {
                     let user = await User.findOneAndUpdate({
                         token: bet.user.token
                     }, {
-                        $inc: { points: bet.gain + bet.amount }
+                        $inc: { points: bet.gain }
                     }, { new: true })
 
                     if (user !== null) {

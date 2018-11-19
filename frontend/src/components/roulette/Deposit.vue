@@ -17,17 +17,17 @@
         </div>
         <div class="row my-2">
             <div class="col-sm-4 text-center">
-                <button class="btn btn-black btn-block text-light" @click="deposit('black')">
+                <button class="btn btn-black btn-block text-light" @click="deposit('black')" :disabled="status !== 'bet'">
                     <i class="fas fa-arrow-circle-down"></i>
                 </button>
             </div>
             <div class="col-sm-4">
-                <button class="btn btn-red btn-block text-light" @click="deposit('red')">
+                <button class="btn btn-red btn-block text-light" @click="deposit('red')" :disabled="status !== 'bet'">
                     <i class="fas fa-arrow-circle-down"></i>
                 </button>
             </div>
             <div class="col-sm-4">
-                <button class="btn btn-green btn-block text-light" @click="deposit('green')">
+                <button class="btn btn-green btn-block text-light" @click="deposit('green')" :disabled="status !== 'bet'">
                     <i class="fas fa-arrow-circle-down"></i>
                 </button>
             </div>
@@ -36,6 +36,8 @@
 </template>
 
 <script>
+    import { mapState } from 'vuex'
+    import Store from '@/stores/RouletteStore'
     import Socket from '@/Socket'
 
     export default {
@@ -44,6 +46,10 @@
                 amount: 0
             }
         },
+        store: Store,
+        computed: mapState({
+            status: state => state.status,
+        }),
         methods: {
             deposit (type) {
                 if (this.amount <= 0) {
