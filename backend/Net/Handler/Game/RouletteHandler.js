@@ -19,16 +19,25 @@ class RouletteHandler {
         })
 
         socket.on('roulette/deposit', async payload => {
+            // Prevent user from betting if roulette is not in bet mode.
+            if (Roulette.status !== 'bet') {
+                return
+            }
+
             // Find a user and update its balance.
             let user = await User.findOneAndUpdate({
                 token: socket.token,
-                points: { $gt: -1 }
+                points: { $gt: payload.amount }
             }, {
                 $inc: {
-                    // points: -payload.amount
-                    points: 0
+                    points: -payload.amount
                 }
             })
+
+            // User has not enough points.
+            if (user === null) {
+                return
+            }
 
             // Create a bet or update one if already exists.
             let bet = Roulette.bets[payload.type][socket.token]

@@ -1,6 +1,8 @@
+const User = require('../../Models/User')
 const Sockets = require('../../Net/Sockets')
-const StatusPacket = require('../../Net/Packet/Game/Roulette/RouletteStatusPacket')
 const Slots = require('./Slots')
+const StatusPacket = require('../../Net/Packet/Game/Roulette/RouletteStatusPacket')
+const BetsPacket = require('../../Net/Packet/Game/Roulette/RouletteBetsPacket')
 
 const States = {
     BET: 'bet',
@@ -11,7 +13,7 @@ const States = {
 class Roulette {
     constructor () {
         this.status = States.BET
-        this.end = Date.now()
+        this.end = Date.now() + 15e3
         this.offset = 0
 
         this.bets = {
@@ -36,28 +38,71 @@ class Roulette {
         setTimeout(this.reward.bind(this), 15 * 1000)
     }
 
-    reward () {
+    async reward () {
         this.status = States.REWARD
         this.end = Date.now() + 5e3
 
         let arc = (Math.PI * 2) / Slots.length // Angle par case.
         let picked = Math.floor(this.offset / arc) // Offset c'est l'angle de la roulette
-        let index = 37 - (picked % Slots.length)
+        let index = 37 - (picked % Slots.length) - 1
+        let slot = Slots[index]
+
+        // Compute rewards.
+        for (let type in this.bets) {
+            for (let token in this.bets[type]) {
+                let bet = this.bets[type][token]
+
+                // Compute gain for each bet.
+                if (bet.type === slot.color) {
+                    let multiplier = 2
+
+                    if (slot.color === 'green') {
+                        multiplier = 16
+                    }
+
+                    this.bets[type][token].gain = (bet.amount * multiplier) - bet.amount
+                } else {
+                    this.bets[type][token].gain = -bet.amount
+                }
+
+                // Update balance for each users if they gained points.
+                if (this.bets[type][token].gain > 0) {
+                    await User.findOneAndUpdate({
+                        token: bet.user.token
+                    }, {
+                        $inc: {points: bet.gain}
+                    })
+                }
+            }
+        }
 
         // Emit packet to everyone
-        let packet = new StatusPacket(this)
-        Sockets.io.to('roulette').emit(packet.name(), packet.payload())
+        let statusPacket = new StatusPacket(this)
+        let betsPacket = new BetsPacket(this)
+
+        Sockets.io.to('roulette').emit(statusPacket.name(), statusPacket.payload())
+        Sockets.io.to('roulette').emit(betsPacket.name(), betsPacket.payload())
 
         setTimeout(this.bet.bind(this), 5e3)
     }
 
     bet () {
+        // Delete bets from last round
+        for (let type in this.bets) {
+            for (let token in this.bets[type]) {
+                delete this.bets[type][token]
+            }
+        }
+
         this.status = States.BET
         this.end = Date.now() + 10e3
 
         // Emit packet to everyone
-        let packet = new StatusPacket(this)
-        Sockets.io.to('roulette').emit(packet.name(), packet.payload())
+        let statusPacket = new StatusPacket(this)
+        let betsPacket = new BetsPacket(this)
+
+        Sockets.io.to('roulette').emit(statusPacket.name(), statusPacket.payload())
+        Sockets.io.to('roulette').emit(betsPacket.name(), betsPacket.payload())
 
         setTimeout(this.spin.bind(this), 10e3)
     }

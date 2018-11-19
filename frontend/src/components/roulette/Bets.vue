@@ -14,8 +14,8 @@
                         <td>{{ bet.user.nickname }}</td>
                         <td>{{ bet.amount }}</td>
                         <td>
-                            <span v-if="bet.gain > 0">+ {{ bet.gain }}</span>
-                            <span v-if="bet.gain < 0">- {{ bet.gain }}</span>
+                            <span v-if="bet.gain > 0">+ {{ Math.abs(bet.gain) }}</span>
+                            <span v-if="bet.gain < 0">- {{ Math.abs(bet.gain) }}</span>
                             <span v-if="bet.gain === 0">-</span>
                         </td>
                     </tr>
@@ -36,8 +36,8 @@
                         <td>{{ bet.user.nickname }}</td>
                         <td>{{ bet.amount }}</td>
                         <td>
-                            <span v-if="bet.gain > 0">+ {{ bet.gain }}</span>
-                            <span v-if="bet.gain < 0">- {{ bet.gain }}</span>
+                            <span v-if="bet.gain > 0">+ {{ Math.abs(bet.gain) }}</span>
+                            <span v-if="bet.gain < 0">- {{ Math.abs(bet.gain) }}</span>
                             <span v-if="bet.gain === 0">-</span>
                         </td>
                     </tr>
@@ -58,8 +58,8 @@
                         <td>{{ bet.user.nickname }}</td>
                         <td>{{ bet.amount }}</td>
                         <td>
-                            <span v-if="bet.gain > 0">+ {{ bet.gain }}</span>
-                            <span v-if="bet.gain < 0">- {{ bet.gain }}</span>
+                            <span v-if="bet.gain > 0">+ {{ Math.abs(bet.gain) }}</span>
+                            <span v-if="bet.gain < 0">- {{ Math.abs(bet.gain) }}</span>
                             <span v-if="bet.gain === 0">-</span>
                         </td>
                     </tr>
