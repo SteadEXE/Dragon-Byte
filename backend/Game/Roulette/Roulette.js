@@ -28,7 +28,7 @@ class Roulette {
         setTimeout(this.spin.bind(this), 15 * 1000)
     }
 
-    spin () {
+    async spin () {
         this.offset %= Math.PI * 2 // Lower the offset value to the minimum
         this.offset += (Math.PI * 4) + (Math.random() * (Math.PI * 2)) // Two turn + one random
         this.status = States.SPINNING
@@ -99,7 +99,7 @@ class Roulette {
         setTimeout(this.bet.bind(this), 5e3)
     }
 
-    bet () {
+    async bet () {
         // Delete bets from last round
         for (let type in this.bets) {
             for (let token in this.bets[type]) {
