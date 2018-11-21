@@ -64,7 +64,9 @@
         },
         computed: mapState({
             offset: state => state.offset,
+            origin: state => state.origin,
             end: state => state.end,
+            slot: state => state.slot,
             status: state => state.status
         }),
         mounted () {
@@ -100,7 +102,7 @@
 
                 if (Date.now() < this.end && this.status === 'spinning') {
                     let remaining = 1 - (this.end - Date.now()) / 15e3
-                    offset = this.offset * this.easeOutQuad(remaining)
+                    offset = (this.offset - this.origin) * this.easeOutQuad(remaining) + this.origin
                 }
 
                 offset -= Math.PI / 2
@@ -114,6 +116,7 @@
                     this.ctx.arc(centerWheelX, centerWheelY, radius - 100, angle + arc, angle, true)
                     this.ctx.fill()
                     this.ctx.stroke()
+                    this.ctx.closePath()
                 }
 
                 for (let i = 0; i < SLOTS.length; i++) {
@@ -134,10 +137,10 @@
 
                 // Draw triangle
                 this.ctx.beginPath()
-                this.ctx.moveTo(this.canvas.width / 2 - 10, this.canvas.height - 210)
-                this.ctx.lineTo(this.canvas.width / 2 + 10, this.canvas.height - 210)
+                this.ctx.moveTo(this.canvas.width / 2 - 15, this.canvas.height - 210)
+                this.ctx.lineTo(this.canvas.width / 2 + 15, this.canvas.height - 210)
                 this.ctx.lineTo(this.canvas.width / 2, this.canvas.height - 190)
-                this.ctx.lineTo(this.canvas.width / 2 - 10, this.canvas.height - 210)
+                this.ctx.lineTo(this.canvas.width / 2 - 15, this.canvas.height - 210)
                 this.ctx.fillStyle = "#8e44ad"
                 this.ctx.fill()
                 this.ctx.stroke()
@@ -161,8 +164,7 @@
                 requestAnimationFrame(this.draw)
             },
             easeOutQuad (t) {
-                return t * (2 - t)
-                //return t<.5 ? 2*t*t : -1+(4-2*t)*t
+                return t<.5 ? 2*t*t : -1+(4-2*t)*t
             },
             resizeCanvas () {
                 this.canvas.width = this.canvas.clientWidth

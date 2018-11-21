@@ -12,12 +12,16 @@ export default new Vuex.Store({
             green: [ ],
         },
         offset: 0,
+        origin: 0,
+        slot: 0,
         end: 0
     },
     mutations: {
         UPDATE_STATE (state, roulette) {
             state.status = roulette.status
             state.offset = roulette.offset
+            state.origin = roulette.origin
+            state.slot = roulette.slot
             state.end = Date.now() + roulette.remaining
         },
         UPDATE_BETS (state, bets) {

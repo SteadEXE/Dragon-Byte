@@ -16,6 +16,8 @@ class Roulette {
         this.status = States.BET
         this.end = Date.now() + 15e3
         this.offset = 0
+        this.origin = 0
+        this.slot = 0
 
         this.bets = {
             black: { },
@@ -43,10 +45,14 @@ class Roulette {
         this.status = States.REWARD
         this.end = Date.now() + 5e3
 
+        this.origin = this.offset % (Math.PI * 2)
+
         let arc = (Math.PI * 2) / Slots.length // Angle par case.
         let picked = Math.floor(this.offset / arc) // Offset c'est l'angle de la roulette
         let index = 37 - (picked % Slots.length) - 1
         let slot = Slots[index]
+
+        this.slot = index
 
         // Compute rewards.
         for (let type in this.bets) {

@@ -11,6 +11,8 @@ class RouletteStatusPacket {
         return {
             status: this.roulette.status,
             offset: this.roulette.offset,
+            origin: this.roulette.origin,
+            slot: this.roulette.slot,
             remaining: this.roulette.end - Date.now()
         }
     }
