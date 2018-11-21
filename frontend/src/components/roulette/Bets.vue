@@ -12,10 +12,10 @@
                 <tbody>
                     <tr v-for="bet in bets['black']" :class="{ 'text-success': bet.gain > 0, 'text-danger': bet.gain < 0 }">
                         <td>{{ bet.user.nickname }}</td>
-                        <td>{{ bet.amount }}</td>
+                        <td><animated-number :n="bet.amount"></animated-number></td>
                         <td>
-                            <span v-if="bet.gain > 0">+ {{ Math.abs(bet.gain) }}</span>
-                            <span v-if="bet.gain < 0">- {{ Math.abs(bet.gain) }}</span>
+                            <span v-if="bet.gain > 0">+ <animated-number :n="Math.abs(bet.gain)"></animated-number></span>
+                            <span v-if="bet.gain < 0">- <animated-number :n="Math.abs(bet.gain)"></animated-number></span>
                             <span v-if="bet.gain === 0">-</span>
                         </td>
                     </tr>
@@ -34,10 +34,10 @@
                 <tbody>
                     <tr v-for="bet in bets['red']" :class="{ 'text-success': bet.gain > 0, 'text-danger': bet.gain < 0 }">
                         <td>{{ bet.user.nickname }}</td>
-                        <td>{{ bet.amount }}</td>
+                        <td><animated-number :n="bet.amount"></animated-number></td>
                         <td>
-                            <span v-if="bet.gain > 0">+ {{ Math.abs(bet.gain) }}</span>
-                            <span v-if="bet.gain < 0">- {{ Math.abs(bet.gain) }}</span>
+                            <span v-if="bet.gain > 0">+ <animated-number :n="Math.abs(bet.gain)"></animated-number></span>
+                            <span v-if="bet.gain < 0">- <animated-number :n="Math.abs(bet.gain)"></animated-number></span>
                             <span v-if="bet.gain === 0">-</span>
                         </td>
                     </tr>
@@ -56,10 +56,10 @@
                 <tbody>
                     <tr v-for="bet in bets['green']" :class="{ 'text-success': bet.gain > 0, 'text-danger': bet.gain < 0 }">
                         <td>{{ bet.user.nickname }}</td>
-                        <td>{{ bet.amount }}</td>
+                        <td><animated-number :n="bet.amount"></animated-number></td>
                         <td>
-                            <span v-if="bet.gain > 0">+ {{ Math.abs(bet.gain) }}</span>
-                            <span v-if="bet.gain < 0">- {{ Math.abs(bet.gain) }}</span>
+                            <span v-if="bet.gain > 0">+ <animated-number :n="Math.abs(bet.gain)"></animated-number></span>
+                            <span v-if="bet.gain < 0">- <animated-number :n="Math.abs(bet.gain)"></animated-number></span>
                             <span v-if="bet.gain === 0">-</span>
                         </td>
                     </tr>
@@ -73,8 +73,12 @@
     import { mapState } from 'vuex'
     import Socket from '@/Socket'
     import Store from '@/stores/RouletteStore'
+    import AnimatedNumber from '@/components/AnimatedNumber'
 
     export default {
+        components: {
+            animatedNumber: AnimatedNumber
+        },
         store: Store,
         computed: mapState({
             bets: state => state.bets
