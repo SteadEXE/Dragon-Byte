@@ -18,17 +18,17 @@
         <div class="row my-2">
             <div class="col-sm-4 text-center">
                 <button class="btn btn-black btn-block text-light" @click="deposit('black')" :disabled="status !== 'bet'">
-                    <i class="fas fa-arrow-circle-down"></i>
+                    <i class="fas fa-arrow-circle-down"></i> GAIN <i class="fal fa-times"></i> 2
                 </button>
             </div>
             <div class="col-sm-4">
                 <button class="btn btn-red btn-block text-light" @click="deposit('red')" :disabled="status !== 'bet'">
-                    <i class="fas fa-arrow-circle-down"></i>
+                    <i class="fas fa-arrow-circle-down"></i> GAIN <i class="fal fa-times"></i> 2
                 </button>
             </div>
             <div class="col-sm-4">
                 <button class="btn btn-green btn-block text-light" @click="deposit('green')" :disabled="status !== 'bet'">
-                    <i class="fas fa-arrow-circle-down"></i>
+                    <i class="fas fa-arrow-circle-down"></i> GAIN <i class="fal fa-times"></i> 36
                 </button>
             </div>
         </div>

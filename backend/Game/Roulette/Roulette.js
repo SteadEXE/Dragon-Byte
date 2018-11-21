@@ -64,7 +64,7 @@ class Roulette {
                     let multiplier = 2
 
                     if (slot.color === 'green') {
-                        multiplier = 16
+                        multiplier = 36
                     }
 
                     this.bets[type][token].gain = bet.amount * multiplier
