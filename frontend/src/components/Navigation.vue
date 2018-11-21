@@ -6,8 +6,8 @@
         <div class="text-center navbar-text text-font-bold mx-auto">
             <div v-if="account">
                 <i class="fas fa-user-circle mr-2"></i> {{ account.nickname }}
-                <i class="fas fa-star mx-2"></i> {{ account.experience.toLocaleString('fr-FR') }} XP
-                <i class="fas fa-coins mx-2"></i> {{ account.points.toLocaleString('fr-FR') }}
+                <i class="fas fa-star mx-2"></i> <animated-number :n="account.experience"></animated-number> XP
+                <i class="fas fa-coins mx-2"></i> <animated-number :n="account.points"></animated-number>
             </div>
         </div>
         <router-link class="btn btn-outline-light my-2 my-sm-0 mr-2" :to="{ name: 'account' }">
@@ -21,9 +21,12 @@
 
 <script>
     import { mapState } from 'vuex'
-    import Socket from '@/Socket'
+    import AnimatedNumber from '@/components/AnimatedNumber'
 
     export default {
+        components: {
+            animatedNumber: AnimatedNumber
+        },
         methods: {
             logout () {
                 window.localStorage.removeItem('auth-token')
