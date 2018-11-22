@@ -74,10 +74,16 @@ class Roulette {
 
                 // Update balance for each users if they gained points.
                 if (this.bets[type][token].gain > 0) {
+                    // Convert 1% of gain in experience.
+                    let experience = Math.floor(bet.gain * 0.01)
+
                     let user = await User.findOneAndUpdate({
                         token: bet.user.token
                     }, {
-                        $inc: { points: bet.gain }
+                        $inc: {
+                            points: bet.gain,
+                            experience: experience
+                        }
                     }, { new: true })
 
                     if (user !== null) {
