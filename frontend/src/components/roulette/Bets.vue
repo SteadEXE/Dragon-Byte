@@ -1,6 +1,8 @@
 <template>
     <div class="row">
         <div class="col-sm-4 text-light">
+            <deposit type="black" class="mb-2"></deposit>
+
             <table class="table table-dark">
                 <thead class="bg-black">
                     <tr>
@@ -23,6 +25,8 @@
             </table>
         </div>
         <div class="col-sm-4 text-light">
+            <deposit type="red" class="mb-2"></deposit>
+
             <table class="table table-dark">
                 <thead class="bg-red">
                     <tr>
@@ -45,6 +49,8 @@
             </table>
         </div>
         <div class="col-sm-4 text-light">
+            <deposit type="green" class="mb-2"></deposit>
+
             <table class="table table-dark">
                 <thead class="bg-green">
                     <tr>
@@ -74,10 +80,12 @@
     import Socket from '@/Socket'
     import Store from '@/stores/RouletteStore'
     import AnimatedNumber from '@/components/AnimatedNumber'
+    import Deposit from '@/components/roulette/Deposit'
 
     export default {
         components: {
-            animatedNumber: AnimatedNumber
+            animatedNumber: AnimatedNumber,
+            deposit: Deposit
         },
         store: Store,
         computed: mapState({

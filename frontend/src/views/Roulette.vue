@@ -1,7 +1,6 @@
 <template>
     <div>
         <roulette></roulette>
-        <deposit></deposit>
         <bets></bets>
     </div>
 </template>
