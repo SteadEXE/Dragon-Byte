@@ -1,35 +1,56 @@
 <template>
     <div>
-        <div class="deposit mx-auto my-2">
-            <div class="input-group">
-                <div class="input-group-prepend">
-                    <button class="btn btn-outline-danger" @click="increase(-1000)">- 1000</button>
-                    <button class="btn btn-outline-danger" @click="increase(-100)">- 100</button>
-                    <button class="btn btn-outline-danger" @click="increase(-10)">- 10</button>
-                </div>
-                <input type="number" class="form-control bg-dark text-primary border-primary" v-model="amount">
-                <div class="input-group-append">
-                    <button class="btn btn-outline-success" @click="increase(10)">+ 10</button>
-                    <button class="btn btn-outline-success" @click="increase(100)">+ 100</button>
-                    <button class="btn btn-outline-success" @click="increase(1000)">+ 1000</button>
-                </div>
-            </div>
-        </div>
         <div class="row my-2">
             <div class="col-sm-4 text-center">
-                <button class="btn btn-black btn-block text-light" @click="deposit('black')" :disabled="status !== 'bet'">
-                    <i class="fas fa-arrow-circle-down"></i> GAIN <i class="fal fa-times"></i> 2
-                </button>
+                <div class="input-group">
+                    <div class="input-group-append">
+                        <span class="input-group-text bg-dark border-dark rounded-left">
+                            <i class="fa fa-coins"></i>
+                        </span>
+                    </div>
+
+                    <input type="text" class="form-control bg-dark text-light border-dark border-right-0" v-model="amount['black']">
+
+                    <div class="input-group-append">
+                        <button class="btn btn-black btn-block text-light" @click="deposit('black')" :disabled="status !== 'bet'">
+                            <i class="fas fa-arrow-circle-down mr-2"></i> GAIN <i class="fal fa-times"></i> 2
+                        </button>
+                    </div>
+                </div>
             </div>
             <div class="col-sm-4">
-                <button class="btn btn-red btn-block text-light" @click="deposit('red')" :disabled="status !== 'bet'">
-                    <i class="fas fa-arrow-circle-down"></i> GAIN <i class="fal fa-times"></i> 2
-                </button>
+                <div class="input-group">
+                    <div class="input-group-append">
+                        <span class="input-group-text bg-dark border-dark rounded-left">
+                            <i class="fa fa-coins"></i>
+                        </span>
+                    </div>
+
+                    <input type="text" class="form-control bg-dark text-light border-dark border-right-0" v-model="amount['red']">
+
+                    <div class="input-group-append">
+                        <button class="btn btn-red btn-block text-light" @click="deposit('red')" :disabled="status !== 'bet'">
+                            <i class="fas fa-arrow-circle-down mr-2"></i> GAIN <i class="fal fa-times"></i> 2
+                        </button>
+                    </div>
+                </div>
             </div>
             <div class="col-sm-4">
-                <button class="btn btn-green btn-block text-light" @click="deposit('green')" :disabled="status !== 'bet'">
-                    <i class="fas fa-arrow-circle-down"></i> GAIN <i class="fal fa-times"></i> 36
-                </button>
+                <div class="input-group">
+                    <div class="input-group-append">
+                        <span class="input-group-text bg-dark border-dark rounded-left">
+                            <i class="fa fa-coins"></i>
+                        </span>
+                    </div>
+
+                    <input type="text" class="form-control bg-dark text-light border-dark border-right-0" v-model="amount['green']">
+
+                    <div class="input-group-append">
+                        <button class="btn btn-green btn-block text-light" @click="deposit('green')" :disabled="status !== 'bet'">
+                            <i class="fas fa-arrow-circle-down mr-2"></i> GAIN <i class="fal fa-times"></i> 36
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -43,7 +64,11 @@
     export default {
         data () {
             return {
-                amount: 0
+                amount: {
+                    green: 0,
+                    black: 0,
+                    red: 0
+                }
             }
         },
         store: Store,
@@ -58,15 +83,8 @@
 
                 Socket.emit('roulette/deposit', {
                     type: type,
-                    amount: this.amount
+                    amount: this.amount[type]
                 })
-            },
-            increase (n) {
-                if (this.amount + n < 0) {
-                    return
-                }
-
-                this.amount = parseInt(this.amount, 10) + parseInt(n, 10)
             }
         }
     }
