@@ -114,7 +114,7 @@ class Roulette {
         }
 
         this.status = States.BET
-        this.end = Date.now() + 10e3
+        this.end = Date.now() + 15e3
 
         // Emit packet to everyone
         let statusPacket = new StatusPacket(this)
@@ -123,7 +123,7 @@ class Roulette {
         Sockets.io.to('roulette').emit(statusPacket.name(), statusPacket.payload())
         Sockets.io.to('roulette').emit(betsPacket.name(), betsPacket.payload())
 
-        setTimeout(this.spin.bind(this), 10e3)
+        setTimeout(this.spin.bind(this), 15e3)
     }
 }
 
