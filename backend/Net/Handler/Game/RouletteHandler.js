@@ -28,7 +28,7 @@ class RouletteHandler {
             // Find a user and update its balance.
             let user = await User.findOneAndUpdate({
                 token: socket.token,
-                points: { $gt: payload.amount }
+                points: { $gte: payload.amount }
             }, {
                 $inc: {
                     points: -payload.amount
