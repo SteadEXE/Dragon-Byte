@@ -87,6 +87,7 @@
             connect (token) {
                 Socket.once('connect', () => {
                     this.$store.dispatch('account/authenticate')
+                    this.$router.push({ name: 'home' })
                 })
 
                 Socket.io.opts.query = { token }

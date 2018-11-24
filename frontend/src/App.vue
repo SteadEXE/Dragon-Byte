@@ -13,7 +13,7 @@
         </div>
         <!-- Pas de connexion au serveur -->
         <div v-else>
-            <login></login>
+            <router-view></router-view>
         </div>
     </div>
 </template>
