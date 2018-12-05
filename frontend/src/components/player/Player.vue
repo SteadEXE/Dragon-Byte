@@ -66,6 +66,9 @@
 
                 return output
             }
+        },
+        beforeMount () {
+            Socket.emit('player/join')
         }
     }
 

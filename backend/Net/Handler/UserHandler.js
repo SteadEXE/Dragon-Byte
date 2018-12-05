@@ -1,7 +1,5 @@
-const crypto = require('crypto')
 const Sockets = require('../Sockets')
 const User = require('../../Models/User')
-const Player = require('../../Player/Player')
 const OnlinePacket = require('../Packet/Users/OnlineUsersPacket')
 const AccountUpdatePacket = require('../Packet/Account/AccountUpdatePacket')
 
@@ -9,8 +7,12 @@ class UserHandler {
     async handle (socket) {
         const user = await User.findOne({ token: socket.token })
         const packet = new AccountUpdatePacket(user)
-        
+
         socket.emit(packet.name(), packet.payload())
+
+        socket.on('player/join', async () => {
+            this.broadcastOnline()
+        })
 
         socket.on('account/position', async (latitude, longitude) => {
             await User.findOneAndUpdate({ token: socket.token }, {
@@ -28,8 +30,6 @@ class UserHandler {
                 this.broadcastOnline()
             }
         })
-
-        this.broadcastOnline()
     }
 
     async broadcastOnline () {

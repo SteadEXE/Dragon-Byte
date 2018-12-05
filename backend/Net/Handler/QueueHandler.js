@@ -11,7 +11,9 @@ const QueueEmitter = require('../../Event/Emitter/QueueEmitter')
 
 class QueueHandler {
     handle (socket) {
-        QueueEmitter.emit('queue/all', socket)
+        socket.on('player/join', () => {
+            QueueEmitter.emit('queue/all', socket)
+        })
 
         socket.on('queue/push', async (link) => {
             // Check that socket is signed-in.

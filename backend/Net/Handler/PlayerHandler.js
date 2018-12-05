@@ -6,7 +6,9 @@ const PlayerStatusPacket = require('../Packet/Player/PlayerStatusPacket')
 
 class PlayerHandler {
     handle (socket) {
-        this.broadcastUpdate(socket)
+        socket.on('player/join', () => {
+            this.broadcastUpdate(socket)
+        })
 
         socket.on('player/next', () => {
             if (Player.status.state === States.PLAYING) {
