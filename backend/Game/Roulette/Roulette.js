@@ -1,6 +1,7 @@
 const User = require('../../Models/User')
 const Sockets = require('../../Net/Sockets')
 const Slots = require('./Slots')
+const Parameter = require('../../Models/Parameter')
 const StatusPacket = require('../../Net/Packet/Game/Roulette/RouletteStatusPacket')
 const BetsPacket = require('../../Net/Packet/Game/Roulette/RouletteBetsPacket')
 const AccountUpdatePacket = require('../../Net/Packet/Account/AccountUpdatePacket')
@@ -19,11 +20,26 @@ class Roulette {
         this.origin = 0
         this.slot = 0
 
+        this.jackpot = 0
+        this.earnings = 0
+        this.losses = 0
+
         this.bets = {
             black: { },
             red: { },
             green: { }
         }
+
+        this.init()
+    }
+
+    async init () {
+        this.jackpot = parseFloat(await Parameter.findOne({ key: 'roulette/jackpot' })) || 0
+        this.earnings = parseFloat(await Parameter.findOne({ key: 'roulette/earnings' })) || 0
+        this.losses = parseFloat(await Parameter.findOne({ key: 'roulette/losses' })) || 0
+
+        let packet = new StatusPacket(this)
+        Sockets.io.to('roulette').emit(packet.name(), packet.payload())
 
         setTimeout(this.spin.bind(this), 15 * 1000)
     }
@@ -33,6 +49,11 @@ class Roulette {
         this.offset += (Math.PI * 4) + (Math.random() * (Math.PI * 2)) // Two turn + one random
         this.status = States.SPINNING
         this.end = Date.now() + 15e3
+
+        // Save jackpot, earnings and losses.
+        await Parameter.findOneAndUpdate({ key: 'roulette/jackpot' }, { value: this.jackpot })
+        await Parameter.findOneAndUpdate({ key: 'roulette/earnings' }, { value: this.earnings })
+        await Parameter.findOneAndUpdate({ key: 'roulette/losses' }, { value: this.losses })
 
         // Emit packet to everyone
         let packet = new StatusPacket(this)

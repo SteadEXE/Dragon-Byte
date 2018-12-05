@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-
-import Player from '@/views/Player'
+import Store from '@/store'
 
 Vue.use(Router)
 
@@ -11,7 +10,7 @@ const router = new Router({
         {
             name: 'home',
             path: '/',
-            component: Player,
+            component: () => import('@/views/Player'),
             meta: {
                 auth: true
             }
@@ -28,6 +27,11 @@ const router = new Router({
             name: 'login',
             path: '/login',
             component: () => import('@/views/Login')
+        },
+        {
+            name: 'forgot',
+            path: '/forgot',
+            component: () => import('@/views/Forgot')
         },
         {
             name: 'map',
@@ -60,7 +64,7 @@ router.beforeEach((to, from, next) => {
     // If route requires user to be auth.
     if (to.matched.some(record => record.meta.auth)) {
         // If no auth token redirect user to auth page.
-        if (window.localStorage.getItem('auth-token') === null) {
+        if (window.localStorage.getItem('auth-token') === null || Store.state.account.authentified === false) {
             next({ name: 'login' })
             return
         }

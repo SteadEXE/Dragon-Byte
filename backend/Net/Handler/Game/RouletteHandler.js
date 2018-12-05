@@ -51,6 +51,9 @@ class RouletteHandler {
 
             Roulette.bets[payload.type][socket.token] = bet
 
+            // Increase jackpot by 1% of bet.
+            Roulette.jackpot += bet.amount * 0.01
+
             // Broadcast bets.
             let betsPacket = new BetsPacket(Roulette)
             let accountUpdatePacket = new AccountUpdatePacket(user)

@@ -2,7 +2,8 @@ class Track {
     export () {
         return {
             title: this.title,
-            played: this.played
+            played: this.played,
+            videoId: this.videoId
         }
     }
 }
