@@ -2,7 +2,7 @@
     <div class="card bg-dark rounded-0 entry">
         <div class="card-header py-2 font-weight-bold">
             <i class="fas fa-music mr-2"></i> {{ entry.track.title }}
-            <a :href="'https://youtub.be/' + entry.track.videoId">
+            <a :href="'https://youtu.be/' + entry.track.videoId">
                 <i class="ml-2 fab fa-youtube"></i>
             </a>
         </div>
