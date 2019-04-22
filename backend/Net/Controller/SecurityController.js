@@ -1,5 +1,6 @@
 const crypto = require('crypto')
 const User = require('../../Models/User')
+const { mail } = require('nodemailer')
 
 class SecurityController
 {
@@ -89,6 +90,31 @@ class SecurityController
 
         payload.status = 'ok'
         payload.message = 'Votre compte a été crée avec succès.'
+
+        res.json(payload)
+    }
+
+    async resetPassword (req, res) {
+        const email = req.body.email.trim()
+
+        let user = await User.findOne({
+            email: email
+        })
+
+        let payload = { }
+
+        if (user == null) {
+            payload.status = 'err'
+            payload.message = `Aucun compte n'existe avec cette adresse mail.`
+
+            res.json(payload)
+            return
+        }
+
+        mail()
+
+        payload.status = 'ok'
+        payload.message = 'Un nouveau mot de passe a été envoyé par mail.'
 
         res.json(payload)
     }

@@ -26,12 +26,18 @@ const router = new Router({
         {
             name: 'login',
             path: '/login',
-            component: () => import('@/views/Login')
+            component: () => import('@/views/Login'),
+            meta: {
+                guest: true
+            }
         },
         {
             name: 'forgot',
             path: '/forgot',
-            component: () => import('@/views/Forgot')
+            component: () => import('@/views/Forgot'),
+            meta: {
+                guest: true
+            }
         },
         {
             name: 'map',
