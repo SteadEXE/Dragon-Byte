@@ -12,6 +12,8 @@ const States = {
     REWARD: 'reward'
 }
 
+const JackpotTreshold = 100000
+
 class Roulette {
     constructor () {
         this.status = States.BET
@@ -75,6 +77,8 @@ class Roulette {
 
         this.slot = index
 
+        let jackpotWinner = null
+
         // Compute rewards.
         for (let type in this.bets) {
             for (let token in this.bets[type]) {
@@ -112,6 +116,71 @@ class Roulette {
 
                         Sockets.io.to(user.token).emit(accountUpdatePacket.name(), accountUpdatePacket.payload())
                     }
+                }
+
+                // Check for jackpot
+                if (this.jackpot > 0) {
+                    let luck = (1 - Math.pow(0.99, (bet.amount / JackpotTreshold))) * 100
+                    let rand = Math.floor(Math.random() * 100)
+
+                    if (rand <= luck) {
+                        jackpotWinner = bet.user.token
+                    }
+                }
+            }
+        }
+
+        if (jackpotWinner !== null) {
+            let winnersPool = this.jackpot * 0.20
+            let losersPool = this.jackpot * 0.10
+
+            let winners = 0
+            let losers = 0
+
+            // Count winners and losers.
+            for (let type in this.bets) {
+                for (let token in this.bets[type]) {
+                    if (token !== jackpotWinner) {
+                        if (this.bets[type][token].gain > 0) {
+                            winners++
+                        } else {
+                            losers++
+                        }
+                    }
+                }
+            }
+
+            // Give them some money and experience.
+            for (let type in this.bets) {
+                for (let token in this.bets[type]) {
+                    let amount = 0
+                    let experience = 0
+
+                    // Compute amount of jackpot's gain
+                    if (token !== jackpotWinner) {
+                        if (this.bets[type][token].gain > 0) {
+                            amount = Math.round(winnersPool / winners)
+                        } else {
+                            amount = Math.round(losersPool / losers)
+                        }
+                    } else {
+                        amount = Math.round(this.jackpot * 0.70)
+                    }
+
+                    // Update bets so summary is accurate after a jackpot is won.
+                    this.bets[type][token].gain += amount
+
+                    experience = Math.round(amount * 0.01)
+
+                    // Finally update the user.
+                    let user = await User.findOneAndUpdate({
+                        token: bet.user.token
+                    }, {
+                        $inc: {
+                            points: amount,
+                            experience: experience
+                        }
+                    }, { new: true })
                 }
             }
         }
