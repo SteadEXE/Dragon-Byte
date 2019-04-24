@@ -31,8 +31,6 @@ class Roulette {
             red: { },
             green: { }
         }
-
-        this.init()
     }
 
     async init () {
