@@ -57,9 +57,11 @@ class RouletteHandler {
             // Broadcast bets.
             let betsPacket = new BetsPacket(Roulette)
             let accountUpdatePacket = new AccountUpdatePacket(user)
+            let statusPacket = new StatusPacket(Roulette)
 
             Sockets.io.to(user.token).emit(accountUpdatePacket.name(), accountUpdatePacket.payload())
             Sockets.io.to('roulette').emit(betsPacket.name(), betsPacket.payload())
+            Sockets.io.to('roulette').emit(statusPacket.name(), statusPacket.payload())
         })
 
         socket.on('roulette/leave', () => {
