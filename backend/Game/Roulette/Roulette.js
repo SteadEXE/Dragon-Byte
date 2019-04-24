@@ -53,9 +53,9 @@ class Roulette {
         this.end = Date.now() + 15e3
 
         // Save jackpot, earnings and losses.
-        await Parameter.findOneAndUpdate({ key: 'roulette/jackpot' }, { value: this.jackpot })
-        await Parameter.findOneAndUpdate({ key: 'roulette/earnings' }, { value: this.earnings })
-        await Parameter.findOneAndUpdate({ key: 'roulette/losses' }, { value: this.losses })
+        await Parameter.findOneAndUpdate({ key: 'roulette/jackpot' }, { value: this.jackpot }, { upsert: true })
+        await Parameter.findOneAndUpdate({ key: 'roulette/earnings' }, { value: this.earnings }, { upsert: true })
+        await Parameter.findOneAndUpdate({ key: 'roulette/losses' }, { value: this.losses }, { upsert: true })
 
         // Emit packet to everyone
         let packet = new StatusPacket(this)
