@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const Console = require('./Console')
 const Player = require('./Player/Player')
 const HTTP = require('./Net/HTTP')
-const Roulette = require('./Game/Roulette')
+const Roulette = require('./Game/Roulette/Roulette')
 
 // Load listeners.
 require('./Event/Listener/UserListener')
