@@ -5,7 +5,7 @@ const Parameter = require('../../Models/Parameter')
 const StatusPacket = require('../../Net/Packet/Game/Roulette/RouletteStatusPacket')
 const BetsPacket = require('../../Net/Packet/Game/Roulette/RouletteBetsPacket')
 const AccountUpdatePacket = require('../../Net/Packet/Account/AccountUpdatePacket')
-const HistoryPacket = rerquire('../../Net/Packet/Game/Roulette/RouletteHistoryPacket')
+const HistoryPacket = require('../../Net/Packet/Game/Roulette/RouletteHistoryPacket')
 
 const States = {
     BET: 'bet',
