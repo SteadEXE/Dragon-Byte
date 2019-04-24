@@ -5,6 +5,7 @@ const Parameter = require('../../Models/Parameter')
 const StatusPacket = require('../../Net/Packet/Game/Roulette/RouletteStatusPacket')
 const BetsPacket = require('../../Net/Packet/Game/Roulette/RouletteBetsPacket')
 const AccountUpdatePacket = require('../../Net/Packet/Account/AccountUpdatePacket')
+const HistoryPacket = rerquire('../../Net/Packet/Game/Roulette/RouletteHistoryPacket')
 
 const States = {
     BET: 'bet',
@@ -31,6 +32,8 @@ class Roulette {
             red: { },
             green: { }
         }
+
+        this.history = [ ]
     }
 
     async init () {
@@ -74,6 +77,13 @@ class Roulette {
         let slot = Slots[index]
 
         this.slot = index
+
+        // Add slot to history
+        this.history.push(this.slot)
+
+        if (this.history.length > 10) {
+            this.history.shift()
+        }
 
         let jackpotWinner = null
 
@@ -186,9 +196,11 @@ class Roulette {
         // Emit packet to everyone
         let statusPacket = new StatusPacket(this)
         let betsPacket = new BetsPacket(this)
+        let historyPacket = new HistoryPacket(this)
 
         Sockets.io.to('roulette').emit(statusPacket.name(), statusPacket.payload())
         Sockets.io.to('roulette').emit(betsPacket.name(), betsPacket.payload())
+        Sockets.io.to('roulette').emit(historyPacket.name(), historyPacket.payload())
 
         setTimeout(this.bet.bind(this), 5e3)
     }
