@@ -36,9 +36,9 @@ class Roulette {
     }
 
     async init () {
-        this.jackpot = parseFloat(await Parameter.findOne({ key: 'roulette/jackpot' })) || 0
-        this.earnings = parseFloat(await Parameter.findOne({ key: 'roulette/earnings' })) || 0
-        this.losses = parseFloat(await Parameter.findOne({ key: 'roulette/losses' })) || 0
+        this.jackpot = parseFloat(await Parameter.findOne({ key: 'roulette/jackpot' }).value || 0)
+        this.earnings = parseFloat(await Parameter.findOne({ key: 'roulette/earnings' }).value || 0)
+        this.losses = parseFloat(await Parameter.findOne({ key: 'roulette/losses' }).value || 0)
 
         let packet = new StatusPacket(this)
         Sockets.io.to('roulette').emit(packet.name(), packet.payload())
