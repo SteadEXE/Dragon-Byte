@@ -12,7 +12,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="bet in bets['black']" :key="bet" :class="{ 'text-success': bet.gain > 0, 'text-danger': bet.gain < 0 }">
+                    <tr v-for="bet in bets['black']" :key="bet.user.nickname" :class="{ 'text-success': bet.gain > 0, 'text-danger': bet.gain < 0 }">
                         <td>{{ bet.user.nickname }}</td>
                         <td><animated-number :n="bet.amount"></animated-number></td>
                         <td>
@@ -36,7 +36,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="bet in bets['red']" :key="bet" :class="{ 'text-success': bet.gain > 0, 'text-danger': bet.gain < 0 }">
+                    <tr v-for="bet in bets['red']" :key="bet.user.nickname" :class="{ 'text-success': bet.gain > 0, 'text-danger': bet.gain < 0 }">
                         <td>{{ bet.user.nickname }}</td>
                         <td><animated-number :n="bet.amount"></animated-number></td>
                         <td>
@@ -60,7 +60,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="bet in bets['green']" :key="bet" :class="{ 'text-success': bet.gain > 0, 'text-danger': bet.gain < 0 }">
+                    <tr v-for="bet in bets['green']" :key="bet.user.nickname" :class="{ 'text-success': bet.gain > 0, 'text-danger': bet.gain < 0 }">
                         <td>{{ bet.user.nickname }}</td>
                         <td><animated-number :n="bet.amount"></animated-number></td>
                         <td>
