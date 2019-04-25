@@ -161,12 +161,13 @@ class Roulette {
             // Give them some money and experience.
             for (let type in this.bets) {
                 for (let token in this.bets[type]) {
+                    let bet = this.bets[type][token]
                     let amount = 0
                     let experience = 0
 
                     // Compute amount of jackpot's gain
                     if (token !== jackpotWinner) {
-                        if (this.bets[type][token].gain > 0) {
+                        if (bet.gain > 0) {
                             amount = Math.round(winnersPool / winners)
                         } else {
                             amount = Math.round(losersPool / losers)
@@ -176,7 +177,7 @@ class Roulette {
                     }
 
                     // Update bets so summary is accurate after a jackpot is won.
-                    this.bets[type][token].gain += amount
+                    bet.gain += amount
 
                     experience = Math.round(amount * 0.01)
 
