@@ -1,7 +1,7 @@
 <template>
     <div class="text-center mb-2">
         <p class="mb-0 text-secondary">
-            DERNIER NUMÉROS
+            DERNIERS NUMÉROS
         </p>
         <span v-for="slot in history" :key="slot.date" class="badge badge-pill mx-1 w-1 history-slot" :class="{ 
             'badge-black': slot.color == 'black',
