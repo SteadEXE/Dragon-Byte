@@ -5,7 +5,6 @@ const Parameter = require('../../Models/Parameter')
 const StatusPacket = require('../../Net/Packet/Game/Roulette/RouletteStatusPacket')
 const BetsPacket = require('../../Net/Packet/Game/Roulette/RouletteBetsPacket')
 const AccountUpdatePacket = require('../../Net/Packet/Account/AccountUpdatePacket')
-const HistoryPacket = require('../../Net/Packet/Game/Roulette/RouletteHistoryPacket')
 
 const States = {
     BET: 'bet',
@@ -21,7 +20,6 @@ class Roulette {
         this.end = Date.now() + 15e3
         this.offset = 0
         this.origin = 0
-        this.slot = 0
 
         this.jackpot = 0
         this.earnings = 0
@@ -80,12 +78,14 @@ class Roulette {
         let arc = (Math.PI * 2) / Slots.length // Angle par case.
         let picked = Math.floor(this.offset / arc) // Offset c'est l'angle de la roulette
         let index = 37 - (picked % Slots.length) - 1
-        let slot = Slots[index]
 
-        this.slot = index
+        // Clone slot and add date.
+        let slot = Object.assign({
+            date: Date.now()
+        }, Slots[index])
 
         // Add slot to history
-        this.history.push(this.slot)
+        this.history.push(slot)
 
         if (this.history.length > 10) {
             this.history.shift()
@@ -167,12 +167,13 @@ class Roulette {
             // Give them some money and experience.
             for (let type in this.bets) {
                 for (let token in this.bets[type]) {
+                    let bet = this.bets[type][token]
                     let amount = 0
                     let experience = 0
 
                     // Compute amount of jackpot's gain
                     if (token !== jackpotWinner) {
-                        if (this.bets[type][token].gain > 0) {
+                        if (bet.gain > 0) {
                             amount = Math.round(winnersPool / winners)
                         } else {
                             amount = Math.round(losersPool / losers)
@@ -182,7 +183,7 @@ class Roulette {
                     }
 
                     // Update bets so summary is accurate after a jackpot is won.
-                    this.bets[type][token].gain += amount
+                    bet.gain += amount
 
                     experience = Math.round(amount * 0.01)
 
@@ -202,11 +203,9 @@ class Roulette {
         // Emit packet to everyone
         let statusPacket = new StatusPacket(this)
         let betsPacket = new BetsPacket(this)
-        let historyPacket = new HistoryPacket(this)
 
         Sockets.io.to('roulette').emit(statusPacket.name(), statusPacket.payload())
         Sockets.io.to('roulette').emit(betsPacket.name(), betsPacket.payload())
-        Sockets.io.to('roulette').emit(historyPacket.name(), historyPacket.payload())
 
         setTimeout(this.bet.bind(this), 5e3)
     }
