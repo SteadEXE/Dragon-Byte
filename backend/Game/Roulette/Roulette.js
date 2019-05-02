@@ -43,8 +43,6 @@ class Roulette {
         this.earnings = parseFloat(earnings.value) || 0
         this.losses = parseFloat(losses.value) || 0
 
-        console.log(this.jackpot)
-
         let packet = new StatusPacket(this)
         Sockets.io.to('roulette').emit(packet.name(), packet.payload())
 
