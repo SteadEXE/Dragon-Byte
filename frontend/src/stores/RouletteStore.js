@@ -13,22 +13,22 @@ export default new Vuex.Store({
         },
         offset: 0,
         origin: 0,
-        slot: 0,
         end: 0,
         jackpot: 0,
         earnings: 0,
-        losses: 0
+        losses: 0,
+        history: []
     },
     mutations: {
         UPDATE_STATE (state, roulette) {
             state.status = roulette.status
             state.offset = roulette.offset
             state.origin = roulette.origin
-            state.slot = roulette.slot
             state.end = Date.now() + roulette.remaining
             state.jackpot = roulette.jackpot
             state.earnings = roulette.earnings
             state.losses = roulette.losses
+            state.history = roulette.history
         },
         UPDATE_BETS (state, bets) {
             state.bets = bets

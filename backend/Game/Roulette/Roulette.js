@@ -20,7 +20,6 @@ class Roulette {
         this.end = Date.now() + 15e3
         this.offset = 0
         this.origin = 0
-        this.slot = 0
 
         this.jackpot = 0
         this.earnings = 0
@@ -32,13 +31,17 @@ class Roulette {
             green: { }
         }
 
-        this.init()
+        this.history = [ ]
     }
 
     async init () {
-        this.jackpot = parseFloat(await Parameter.findOne({ key: 'roulette/jackpot' })) || 0
-        this.earnings = parseFloat(await Parameter.findOne({ key: 'roulette/earnings' })) || 0
-        this.losses = parseFloat(await Parameter.findOne({ key: 'roulette/losses' })) || 0
+        let jackpot = await Parameter.findOne({ key: 'roulette/jackpot' })
+        let earnings = await Parameter.findOne({ key: 'roulette/earnings' })
+        let losses = await Parameter.findOne({ key: 'roulette/losses' })
+
+        this.jackpot = parseFloat(jackpot.value) || 0
+        this.earnings = parseFloat(earnings.value) || 0
+        this.losses = parseFloat(losses.value) || 0
 
         let packet = new StatusPacket(this)
         Sockets.io.to('roulette').emit(packet.name(), packet.payload())
@@ -53,9 +56,9 @@ class Roulette {
         this.end = Date.now() + 15e3
 
         // Save jackpot, earnings and losses.
-        await Parameter.findOneAndUpdate({ key: 'roulette/jackpot' }, { value: this.jackpot })
-        await Parameter.findOneAndUpdate({ key: 'roulette/earnings' }, { value: this.earnings })
-        await Parameter.findOneAndUpdate({ key: 'roulette/losses' }, { value: this.losses })
+        await Parameter.findOneAndUpdate({ key: 'roulette/jackpot' }, { value: this.jackpot }, { upsert: true })
+        await Parameter.findOneAndUpdate({ key: 'roulette/earnings' }, { value: this.earnings }, { upsert: true })
+        await Parameter.findOneAndUpdate({ key: 'roulette/losses' }, { value: this.losses }, { upsert: true })
 
         // Emit packet to everyone
         let packet = new StatusPacket(this)
@@ -73,9 +76,18 @@ class Roulette {
         let arc = (Math.PI * 2) / Slots.length // Angle par case.
         let picked = Math.floor(this.offset / arc) // Offset c'est l'angle de la roulette
         let index = 37 - (picked % Slots.length) - 1
-        let slot = Slots[index]
 
-        this.slot = index
+        // Clone slot and add date.
+        let slot = Object.assign({
+            date: Date.now()
+        }, Slots[index])
+
+        // Add slot to history
+        this.history.push(slot)
+
+        if (this.history.length > 10) {
+            this.history.shift()
+        }
 
         let jackpotWinner = null
 
@@ -153,12 +165,13 @@ class Roulette {
             // Give them some money and experience.
             for (let type in this.bets) {
                 for (let token in this.bets[type]) {
+                    let bet = this.bets[type][token]
                     let amount = 0
                     let experience = 0
 
                     // Compute amount of jackpot's gain
                     if (token !== jackpotWinner) {
-                        if (this.bets[type][token].gain > 0) {
+                        if (bet.gain > 0) {
                             amount = Math.round(winnersPool / winners)
                         } else {
                             amount = Math.round(losersPool / losers)
@@ -168,7 +181,7 @@ class Roulette {
                     }
 
                     // Update bets so summary is accurate after a jackpot is won.
-                    this.bets[type][token].gain += amount
+                    bet.gain += amount
 
                     experience = Math.round(amount * 0.01)
 
