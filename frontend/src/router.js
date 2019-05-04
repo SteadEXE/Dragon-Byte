@@ -62,6 +62,14 @@ const router = new Router({
             meta: {
                 auth: true
             }
+        },
+        {
+            name: 'kaboom',
+            path: '/kaboom',
+            component: () => import('@/views/Kaboom'),
+            meta: {
+                auth: true
+            }
         }
     ]
 })
